@@ -1,5 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Staatliches&display=swap');
+.gradientLetters {
+  font-family: "Covered By Your Grace", Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  font-size: 3.9rem;
+  background: linear-gradient(70deg, #e97979 30%, #7581ff);
+  background: linear-gradient(160deg, #18c8d1, #03e04b);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 
+/* 
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -45,17 +55,4 @@
 .read-the-docs {
   color: #888;
 }
-
-h1{
-  letter-spacing: 0.06em;
-  font-family: Staatliches, Arial, Helvetica, sans-serif;
-}
-
-.gradiantLetters {
-  font-family: Staatliches, Arial, Helvetica, sans-serif;
-  text-transform: uppercase;
-  background: linear-gradient(75deg, #e66465, #9198e5);
-  -webkit-text-fill-color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-}
+ */
