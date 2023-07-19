@@ -26,15 +26,18 @@ export default function NavBar() {
   return (
     mobile ?
       <AppBar component="nav" p={0} m={0}>
-        <Stack direction="row" alignItems="center" pr={2} pl={2} justifyContent="space-between">
-          <IconButton ><Menu /></IconButton>
+        <Stack direction="row" alignItems="center" p={1} justifyContent="space-between">
           <Logo />
-          <Button sx={{
-            fontFamily: "Staatliches",
-            fontSize: "1rem"
-          }} className="gradientButton buttonHover" variant="contained" color="success">
-            Register
-          </Button>
+          <Stack direction={"row"}>
+            <Button sx={{
+              fontFamily: "Staatliches",
+              fontSize: "0.9rem",
+              mr: 2
+            }} className="gradientButton buttonHover" variant="contained" color="success">
+              Register
+            </Button>
+            <IconButton ><Menu /></IconButton>
+          </Stack>
         </Stack>
       </AppBar>
       : <AppBar component="nav" p={0} m={0}>

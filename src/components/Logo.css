@@ -8,4 +8,12 @@
   font-size: 3.2rem;
 }
 
-
+@media (max-width:1000px){
+  .firstWordOfLogo {
+    font-size: 1.2rem;
+  }
+  
+  .secondWordOfLogo{
+    font-size: 2rem;
+  }
+}

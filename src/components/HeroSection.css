@@ -6,6 +6,7 @@
   justify-content: flex-end;
   flex-direction: column;
   gap: 10px;
+  line-height: 1.1;
 }
 
 .heroTitle {
@@ -17,8 +18,7 @@
 
 .highlightedTitle{
   font-size: 7rem;
-  line-height: 0.9;
-}
+  }
 
 @media(max-width:400px){
   .highlightedTitle{
@@ -31,6 +31,6 @@
 
   .heroContainer{
     justify-content: flex-end;
-    height: 45vh;
+    height: 55vh;
   }
 }

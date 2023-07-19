@@ -10,17 +10,27 @@ export default function InformationSection() {
             mt: 10,
             justifyContent: "space-around"
         }}>
-            <Grow in={true}>
+            <Stack width="50%">
+                <Grow in={true}>
 
-                <Typography variant="h2" sx={{
-                    fontFamily: "Staatliches",
-                    width: "50%",
-                    minWidth: "200px",
-                    pt: 3
-                }} color={"text.primary"} >
-                    Built through years of experience <strong className="gradientLetters">learning</strong> languages
-                </Typography>
-            </Grow>
+                    <Typography variant="h2" sx={{
+                        fontFamily: "Staatliches",
+                        minWidth: "200px",
+                        pt: 3
+                    }} color={"text.primary"} >
+                        Built through years of experience <strong className="gradientLetters">learning</strong> languages
+                    </Typography>
+
+                </Grow>
+                <Grow in={true} timeout={1000}>
+                    <Typography variant="body1" sx={{
+                        fontFamily: "Staatliches",
+                        minWidth: "200px",
+                    }} color={"text.secondary"} >
+                        We are here to help you really learn a new language without missing out on any terms and phrases. Our goal is to get you to a native level speaker.
+                    </Typography>
+                </Grow>
+            </Stack>
             <img src={''} alt="" />
         </Stack>
     )
