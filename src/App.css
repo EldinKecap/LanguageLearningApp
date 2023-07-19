@@ -16,6 +16,10 @@
   transition: all 0.25s;
 }
 
+body{
+  font-family: Staatliches;
+}
+
 /* 
 #root {
   max-width: 1280px;
