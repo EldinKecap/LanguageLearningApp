@@ -1,12 +1,19 @@
 .gradientLetters {
   font-family: "Covered By Your Grace", Arial, Helvetica, sans-serif;
   text-transform: uppercase;
-  font-size: 3.9rem;
-  background: linear-gradient(70deg, #e97979 30%, #7581ff);
-  background: linear-gradient(160deg, #18c8d1, #03e04b);
+  background: linear-gradient(160deg, #18c8d1, #03e04b), #03e04b;
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
+}
+
+.gradientButton {
+  background: linear-gradient(160deg, #18c8d1, #03e04b), #03e04b;
+}
+
+.buttonHover:hover {
+  opacity: 0.7;
+  transition: all 0.25s;
 }
 
 /* 

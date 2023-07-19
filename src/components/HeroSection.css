@@ -5,11 +5,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .heroTitle {
   font-family: Staatliches;
   text-align: center;
-  font-size: 3rem;
+  font-size: 4rem;
   color: rgba(255, 255, 255, 0.753);
+}
+
+.highlightedTitle{
+  font-size: 7rem;
+  line-height: 0.9;
+}
+
+@media(max-width:400px){
+  .highlightedTitle{
+    font-size: 3.5rem;
+  }
+  .heroTitle{
+    font-size: 2.3rem;
+  }
 }
