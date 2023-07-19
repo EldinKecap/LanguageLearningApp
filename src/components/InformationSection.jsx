@@ -5,7 +5,7 @@ import React from 'react'
 export default function InformationSection() {
     return (
         <Stack direction={"row"} sx={{
-            height: "80vh",
+            height: "",
             background: "#212326",
             mt: 10,
             justifyContent: "space-around"

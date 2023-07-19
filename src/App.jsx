@@ -1,9 +1,10 @@
 import { createTheme } from "@mui/material";
 import "./App.css";
 import { ThemeProvider } from "@emotion/react";
-import NavBar from "./components/NavBar";
-import HeroSection from "./components/HeroSection";
-import InformationSection from "./components/InformationSection";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import MVC from "./pages/MVC";
+
 
 let theme = createTheme({
   palette: {
@@ -14,9 +15,12 @@ let theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <NavBar />
-      <HeroSection />
-      <InformationSection/>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/mvc" element={<MVC />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }
