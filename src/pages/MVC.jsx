@@ -1,11 +1,10 @@
-import React from 'react'
+import React from "react";
+import FlashCard from "../components/FlashCard";
 
 export default function MVC() {
-    return (
-        <h1 className='gradientLetters'
-            style={{
-                textAlign: "center",
-                fontSize: "200px",
-            }}>MMMMMMVC</h1>
-    )
+  return (
+    <>
+      <FlashCard />
+    </>
+  );
 }
