@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function HeroSection() {
   const navigator = useNavigate()
   function onStartLearningButtonCLickHandler() {
-    navigator('/mvc');
+    navigator('/languagelist');
   }
 
   return (

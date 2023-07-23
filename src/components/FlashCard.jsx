@@ -10,8 +10,13 @@ import Logo from "./Logo";
 
 export default function FlashCard() {
   return (
-    <>
-      <Stack alignItems="center">
+    <Stack height="100vh">
+      <Stack
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        width="100%"
+      >
         <Logo />
       </Stack>
       <LinearProgress variant="determinate" value={69} />
@@ -20,7 +25,7 @@ export default function FlashCard() {
         alignItems="Baseline"
         justifyContent="center"
         gap={5}
-        sx={{ height: "100vh", width: "fit-content", m: "auto" }}
+        sx={{ width: "fit-content", m: "auto" }}
       >
         <Typography
           variant="h2"
@@ -37,17 +42,21 @@ export default function FlashCard() {
           label="Enter answer"
           multiline
           sx={{
-            width: "50vw",
-            minWidth:"250px"
+            width: "80vw",
+            minWidth: "250px",
           }}
         />
         <Stack direction="row" justifyContent={"space-between"} width={"100%"}>
           <Button variant="outlined">Show answer</Button>
-          <Button variant="contained" color="success">
+          <Button
+            variant="contained"
+            color="success"
+            className="gradientButton buttonHover"
+          >
             Submit
           </Button>
         </Stack>
       </Stack>
-    </>
+    </Stack>
   );
 }
