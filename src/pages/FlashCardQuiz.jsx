@@ -9,6 +9,7 @@ export default function FlashCardQuiz() {
   const { language, flashCardSetName } = useParams();
   const [currentFlashCardSet, setCurrentFlashCardSet] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [completion, setCompletion] = useState(0);
 
   useEffect(() => {
     const languagesRef = collection(db, "languages");
@@ -23,8 +24,9 @@ export default function FlashCardQuiz() {
       const flashCardSet = flashCardSets.filter(
         (set) => set.name == flashCardSetName
       )[0].set;
+
       console.log(flashCardSet);
-      setCurrentFlashCardSet(flashCardSet);
+      setCurrentFlashCardSet((curr) => flashCardSet);
     });
   }, []);
 
@@ -32,10 +34,18 @@ export default function FlashCardQuiz() {
     <FlashCard
       flashCardAnswer={currentFlashCardSet[currentQuestion].flashCardAnswer}
       flashCardQuestion={currentFlashCardSet[currentQuestion].flashCardQuestion}
-      completion={50}
+      completion={completion}
       nextQuestion={() => {
-        setCurrentQuestion((curr) => curr + 1);
+        setCurrentQuestion((curr) =>
+          curr != currentFlashCardSet.length - 1 ? curr + 1 : curr
+        );
+
+        setCompletion(
+          ((currentQuestion + 1) / currentFlashCardSet.length) * 100
+        );
       }}
+      numberOfQuestions={currentFlashCardSet.length}
+      currentQuestionNumber={currentQuestion}
     />
   ) : (
     <Stack height="100vh" alignItems={"center"} justifyContent={"center"}>

@@ -30,13 +30,11 @@ export default function FlashCardSetList() {
       const flashCardNameArray = flashCardSets.map(
         (flashCardSet) => flashCardSet.name
       );
-      console.log(flashCardNameArray);
       setFlashCardNames(flashCardNameArray);
     });
   }, []);
 
   function onButtonClickHandler(relPath) {
-    console.log(relPath);
     navigator(relPath);
   }
 
@@ -60,6 +58,7 @@ export default function FlashCardSetList() {
         {flashCardNames.map((cardName) => {
           return (
             <Card
+              key={cardName}
               sx={{
                 minWidth: "250px",
                 maxWidth: "350px",

@@ -13,6 +13,8 @@ export default function FlashCard({
   flashCardAnswer,
   completion,
   nextQuestion,
+  numberOfQuestions,
+  currentQuestionNumber,
 }) {
   const [showAnswer, setShowAnswer] = useState(false);
   const answerRef = useRef();
@@ -20,7 +22,8 @@ export default function FlashCard({
   function onShowAnswerClickedHandler() {
     setShowAnswer((curr) => !curr);
   }
-
+ console.log(numberOfQuestions,
+  currentQuestionNumber);
   return (
     <Stack height="100vh">
       <Stack
@@ -32,29 +35,30 @@ export default function FlashCard({
         <Logo />
       </Stack>
       <LinearProgress variant="determinate" value={completion} />
+      {completion != 100 ?
       <Stack
-        display="row"
+      display="row"
         alignItems="Baseline"
         justifyContent="center"
         gap={5}
         sx={{ width: "fit-content", m: "auto" }}
-      >
+        >
         <Typography
           variant="h2"
           sx={{
             fontFamily: "Staatliches",
             color: "text.primary",
           }}
-        >
+          >
           {flashCardQuestion}
         </Typography>
         {showAnswer && (
           <Typography
-            variant="body2"
-            sx={{
-              fontFamily: "Staatliches",
-              color: "text.secondary",
-            }}
+          variant="body2"
+          sx={{
+            fontFamily: "Staatliches",
+            color: "text.secondary",
+          }}
           >
             {flashCardAnswer}
           </Typography>
@@ -68,13 +72,13 @@ export default function FlashCard({
             width: "80vw",
             minWidth: "250px",
           }}
-        />
+          />
         <Stack
           direction="row"
           justifyContent={"space-between"}
           alignItems={"start"}
           width={"100%"}
-        >
+          >
           <Stack gap={2}>
             <Button variant="outlined" onClick={onShowAnswerClickedHandler}>
               Show answer
@@ -92,7 +96,7 @@ export default function FlashCard({
               if (answer == flashCardAnswer.toLowerCase()) {
                 nextQuestion();
                 setShowAnswer((curr) => false);
-                answerRef.current.value = '';
+                answerRef.current.value = "";
               } else {
                 setShowAnswer((curr) => true);
               }
@@ -102,6 +106,16 @@ export default function FlashCard({
           </Button>
         </Stack>
       </Stack>
+      :<Typography
+      variant="h2"
+      sx={{
+        fontFamily: "Staatliches",
+        color: "text.primary",
+        textAlign:"center"
+      }}
+      >
+      You win
+    </Typography>}
     </Stack>
   );
 }
