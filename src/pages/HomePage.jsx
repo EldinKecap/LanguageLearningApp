@@ -6,7 +6,6 @@ import InformationSection from '../components/InformationSection'
 export default function HomePage() {
     return (
         <>
-            <NavBar />
             <HeroSection />
             <InformationSection />
         </>

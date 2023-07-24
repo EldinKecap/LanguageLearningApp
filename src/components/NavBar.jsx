@@ -6,7 +6,6 @@ import { Menu } from "@mui/icons-material";
 
 export default function NavBar() {
   const mobile = useMediaQuery("(max-width:800px)");
-  console.log(mobile);
 
   const listItemButton = {
     fontFamily: "Staatliches",

@@ -18,8 +18,8 @@ let theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Layout>
-        <Router>
+      <Router>
+        <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/languagelist" element={<LanguageList />} />
@@ -33,8 +33,8 @@ function App() {
             />
             <Route path="*" element={<Error />} />
           </Routes>
-        </Router>
-      </Layout>
+        </Layout>
+      </Router>
     </ThemeProvider>
   );
 }
