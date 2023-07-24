@@ -5,10 +5,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useRef, useState } from "react";
 import Logo from "./Logo";
 
-export default function FlashCard() {
+export default function FlashCard({
+  flashCardQuestion,
+  flashCardAnswer,
+  completion,
+  nextQuestion,
+}) {
+  const [showAnswer, setShowAnswer] = useState(false);
+  const answerRef = useRef();
+
+  function onShowAnswerClickedHandler() {
+    setShowAnswer((curr) => !curr);
+  }
+
   return (
     <Stack height="100vh">
       <Stack
@@ -19,7 +31,7 @@ export default function FlashCard() {
       >
         <Logo />
       </Stack>
-      <LinearProgress variant="determinate" value={69} />
+      <LinearProgress variant="determinate" value={completion} />
       <Stack
         display="row"
         alignItems="Baseline"
@@ -34,10 +46,21 @@ export default function FlashCard() {
             color: "text.primary",
           }}
         >
-          Auto
+          {flashCardQuestion}
         </Typography>
-
+        {showAnswer && (
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: "Staatliches",
+              color: "text.secondary",
+            }}
+          >
+            {flashCardAnswer}
+          </Typography>
+        )}
         <TextField
+          inputRef={answerRef}
           variant="standard"
           label="Enter answer"
           multiline
@@ -46,12 +69,34 @@ export default function FlashCard() {
             minWidth: "250px",
           }}
         />
-        <Stack direction="row" justifyContent={"space-between"} width={"100%"}>
-          <Button variant="outlined">Show answer</Button>
+        <Stack
+          direction="row"
+          justifyContent={"space-between"}
+          alignItems={"start"}
+          width={"100%"}
+        >
+          <Stack gap={2}>
+            <Button variant="outlined" onClick={onShowAnswerClickedHandler}>
+              Show answer
+            </Button>
+            <Button variant="outlined" onClick={nextQuestion}>
+              Skip
+            </Button>
+          </Stack>
           <Button
             variant="contained"
             color="success"
             className="gradientButton buttonHover"
+            onClick={() => {
+              const answer = answerRef.current.value.trim().toLowerCase();
+              if (answer == flashCardAnswer.toLowerCase()) {
+                nextQuestion();
+                setShowAnswer((curr) => false);
+                answerRef.current.value = '';
+              } else {
+                setShowAnswer((curr) => true);
+              }
+            }}
           >
             Submit
           </Button>

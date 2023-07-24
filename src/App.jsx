@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LanguageList from "./pages/LanguageList";
 import Layout from "./components/Layout";
+import Error from "./components/Error";
+import FlashCardSetList from "./pages/FlashCardSetList";
+import FlashCardQuiz from "./pages/FlashCardQuiz";
 
 let theme = createTheme({
   palette: {
@@ -20,7 +23,15 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/languagelist" element={<LanguageList />} />
-            <Route path="*" element={<LanguageList />} />
+            <Route
+              path="/languagelist/:language"
+              element={<FlashCardSetList />}
+            />
+            <Route
+              path="/languagelist/:language/:flashCardSetName"
+              element={<FlashCardQuiz />}
+            />
+            <Route path="*" element={<Error />} />
           </Routes>
         </Router>
       </Layout>
