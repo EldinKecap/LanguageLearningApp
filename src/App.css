@@ -9,6 +9,7 @@
 
 .gradientButton {
   background: linear-gradient(160deg, #18c8d1, #03e04b), #03e04b;
+  font-family: "Staatliches";
 }
 
 .buttonHover:hover {

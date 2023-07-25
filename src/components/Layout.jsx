@@ -5,7 +5,9 @@ import { useLocation } from "react-router-dom";
 export default function Layout({ children }) {
   const location = useLocation();
   let showNavBar = true;
-  if (/\/languagelist\/romanian\/\b/.test(location.pathname)) {
+  const isOnQuizPath = /^\/languagelist\/([^/]+)\/(.+)/.test(location.pathname)
+  console.log();
+  if (isOnQuizPath) {
     showNavBar = false;
   } else {
     showNavBar = true;

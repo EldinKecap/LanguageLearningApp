@@ -8,6 +8,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  CircularProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -15,9 +16,12 @@ import {
 export default function FlashCardSetList() {
   const { language } = useParams();
   const [flashCardNames, setFlashCardNames] = useState([]);
+  const [showLoading, setShowLoading] = useState(false)
   const navigator = useNavigate();
 
+
   useEffect(() => {
+    setShowLoading(true);
     const languagesRef = collection(db, "languages");
     const languageQuery = query(languagesRef, where("name", "==", language));
 
@@ -26,11 +30,13 @@ export default function FlashCardSetList() {
       const flashCardSets = languageSnapshot.docs.map(
         (doc) => doc.data().flashCardSets
       )[0];
-
-      const flashCardNameArray = flashCardSets.map(
-        (flashCardSet) => flashCardSet.name
-      );
-      setFlashCardNames(flashCardNameArray);
+      if (flashCardSets) {
+        const flashCardNameArray = flashCardSets.map(
+          (flashCardSet) => flashCardSet.name
+        );
+        setFlashCardNames(flashCardNameArray);
+      }
+      setShowLoading(false)
     });
   }, []);
 
@@ -40,7 +46,7 @@ export default function FlashCardSetList() {
 
   return (
     <>
-      <Title title={language} />;
+      <Title title={language} />
       <Typography
         variant="body1"
         align="center"
@@ -55,7 +61,7 @@ export default function FlashCardSetList() {
         flexWrap="wrap"
         justifyContent={"center"}
       >
-        {flashCardNames.map((cardName) => {
+        {!showLoading ? flashCardNames.length > 0 ? flashCardNames.map((cardName) => {
           return (
             <Card
               key={cardName}
@@ -87,6 +93,7 @@ export default function FlashCardSetList() {
                     variant="contained"
                     className="gradientButton buttonHover"
                     onClick={() => onButtonClickHandler(cardName)}
+                    sx={{ fontFamily: "Staatliches" }}
                   >
                     Start
                   </Button>
@@ -94,7 +101,11 @@ export default function FlashCardSetList() {
               </CardContent>
             </Card>
           );
-        })}
+        }) : <Typography variant="h3"
+          sx={{ color: "GrayText", fontFamily: "Staatliches" }}
+        >No Flash Card Sets</Typography>
+          : <CircularProgress color="success" disableShrink />
+        }
       </Stack>
     </>
   );

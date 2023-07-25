@@ -1,11 +1,12 @@
-import React from "react";
-import { AppBar, Button, ButtonBase, IconButton, List, ListItem, Stack, useMediaQuery } from "@mui/material";
+import React, { useState } from "react";
+import { AppBar, Button, ButtonBase, Drawer, IconButton, List, ListItem, Stack, SwipeableDrawer, useMediaQuery } from "@mui/material";
 import Logo from "./Logo";
 import { Menu } from "@mui/icons-material";
 
 
 export default function NavBar() {
   const mobile = useMediaQuery("(max-width:800px)");
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const listItemButton = {
     fontFamily: "Staatliches",
@@ -23,7 +24,7 @@ export default function NavBar() {
   }
 
   return (
-    mobile ?
+    mobile ? <>
       <AppBar component="nav" p={0} m={0}>
         <Stack direction="row" alignItems="center" p={1} justifyContent="space-between">
           <Logo />
@@ -35,10 +36,18 @@ export default function NavBar() {
             }} className="gradientButton buttonHover" variant="contained" color="success">
               Register
             </Button>
-            <IconButton ><Menu /></IconButton>
+            <IconButton onClick={() => {
+              setDrawerOpen(true)
+            }}><Menu /></IconButton>
           </Stack>
         </Stack>
       </AppBar>
+      <SwipeableDrawer open={drawerOpen} anchor="right"
+        onOpen={() => { setDrawerOpen(true) }}
+        onClose={() => { setDrawerOpen(false) }}>
+        awesome
+      </SwipeableDrawer>
+    </>
       : <AppBar component="nav" p={0} m={0}>
         <Stack
           direction={"row"}
