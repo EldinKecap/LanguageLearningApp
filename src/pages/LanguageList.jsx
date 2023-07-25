@@ -67,6 +67,7 @@ export default function LanguageList() {
       setShowLoading(false)
     });
   }, []);
+
   return (<>
     <Title title="Language List" />
     <Typography
@@ -77,7 +78,7 @@ export default function LanguageList() {
       Pick a language
     </Typography>
     <Stack alignItems="center" >
-      {showLoading ? <CircularProgress color="success" disableShrink /> :
+      {showLoading ? <CircularProgress color="success" disableShrink sx={{m:2}}/> :
         <Stack width="90%">
           <List>
             {languages.map((language) => {

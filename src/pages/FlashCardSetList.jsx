@@ -61,7 +61,7 @@ export default function FlashCardSetList() {
         flexWrap="wrap"
         justifyContent={"center"}
       >
-        {!showLoading ? flashCardNames.length > 0 ? flashCardNames.map((cardName) => {
+        {showLoading ? <CircularProgress color="success" disableShrink /> : flashCardNames.length > 0 ? flashCardNames.map((cardName) => {
           return (
             <Card
               key={cardName}
@@ -104,7 +104,7 @@ export default function FlashCardSetList() {
         }) : <Typography variant="h3"
           sx={{ color: "GrayText", fontFamily: "Staatliches" }}
         >No Flash Card Sets</Typography>
-          : <CircularProgress color="success" disableShrink />
+
         }
       </Stack>
     </>
