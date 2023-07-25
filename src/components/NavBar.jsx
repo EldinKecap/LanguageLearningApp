@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { AppBar, Button, ButtonBase, Drawer, IconButton, List, ListItem, Stack, SwipeableDrawer, useMediaQuery } from "@mui/material";
+import { AppBar, Button, ButtonBase, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, Stack, useMediaQuery } from "@mui/material";
 import Logo from "./Logo";
-import { Menu } from "@mui/icons-material";
+import { Close, Menu } from "@mui/icons-material";
 
 
 export default function NavBar() {
@@ -23,6 +23,8 @@ export default function NavBar() {
 
   }
 
+  const listDrawerItemButton = { fontSize: "1.8rem", justifyContent: "end" }
+
   return (
     mobile ? <>
       <AppBar component="nav" p={0} m={0}>
@@ -42,11 +44,28 @@ export default function NavBar() {
           </Stack>
         </Stack>
       </AppBar>
-      <SwipeableDrawer open={drawerOpen} anchor="right"
+      <Drawer open={drawerOpen} anchor="right"
         onOpen={() => { setDrawerOpen(true) }}
         onClose={() => { setDrawerOpen(false) }}>
-        awesome
-      </SwipeableDrawer>
+        <List disablePadding>
+          <ListItemButton key={"whyJoin"} sx={listDrawerItemButton}
+            onClick={() => {
+              setDrawerOpen(false)
+            }}
+          >
+            <ListItemIcon>
+              <Close />
+            </ListItemIcon>
+            Close</ListItemButton>
+          <Divider />
+          <ListItemButton key={"whyJoin"} sx={listDrawerItemButton}>Why Join</ListItemButton>
+          <Divider />
+          <ListItemButton key={"about"} sx={listDrawerItemButton}>About</ListItemButton>
+          <Divider />
+          <ListItemButton key={""} sx={listDrawerItemButton}>Contact</ListItemButton>
+          <Divider />
+        </List>
+      </Drawer>
     </>
       : <AppBar component="nav" p={0} m={0}>
         <Stack
