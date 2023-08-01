@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   IconButton,
   List,
@@ -6,12 +7,14 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
-import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import React, { useEffect, useRef, useState } from "react";
 import db from "../firebase/firebase";
 import { Add, AddCircle } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 function LanguageListItem({ language }) {
   return (
@@ -23,8 +26,15 @@ function LanguageListItem({ language }) {
         >
           {language}
         </ListItemText>
-        <ListItemIcon>
+        <ListItemIcon sx={{
+          display: "flex",
+          flexDirection: "column", alignItems: "center"
+        }}>
           <Add />
+          <Typography variant="body2" sx={{
+            fontFamily: "Staatliches",
+            color: "text.secondary",
+          }}>add set</Typography>
         </ListItemIcon>
       </ListItemButton>
       <Divider />
@@ -34,7 +44,32 @@ function LanguageListItem({ language }) {
 
 export default function AdminPanel() {
   const [languages, setLanguages] = useState([]);
-  const [showLoading, setShowLoading] = useState([]);
+  const [showLoading, setShowLoading] = useState(true);
+  const [showInput, setShowInput] = useState(false);
+  const inputLangRef = useRef('')
+  const navigator = useNavigate();
+
+
+  function onAddLanguageIconClicked() {
+    setShowInput(true);
+  }
+
+  function onLangSubmitHandler(event) {
+    const languageName = inputLangRef.current.value
+    console.log(languageName);
+
+    console.log(event.type);
+    if (languageName.trim() === "") {
+      console.log("Error");
+      return
+    }
+   
+    if (event.key == "Enter" || event.type == "click") {
+      addDoc(collection(db, 'languages'), { name: languageName }).then((res) => {
+        navigator(0)
+      })
+    }
+  }
 
   useEffect(() => {
     setShowLoading(true);
@@ -59,7 +94,7 @@ export default function AdminPanel() {
         Admin Panel
       </Typography>
       <Typography
-        variant="body2"
+        variant="h5"
         sx={{
           fontFamily: "Staatliches",
           textAlign: "center",
@@ -68,14 +103,44 @@ export default function AdminPanel() {
       >
         Language List
       </Typography>
+      {showInput ? <Stack gap={3} alignItems="center" mb={2}>
+        <TextField inputRef={inputLangRef} label="Enter language" onKeyDown={onLangSubmitHandler} sx={{
+          width: "fit-content",
+          m: "auto",
+          mt: 3,
+          mb: 0,
+        }} />
+        <Button 
+        className="gradientButton buttonHover" 
+        sx={{ fontFamily: "Staatliches", color: "black" }}
+        onClick={onLangSubmitHandler}
+        >Submit</Button>
+      </Stack>
+        :
+        <Stack>
+          <IconButton size="large" sx={{
+            width: "fit-content",
+            m: "auto",
+            mt: 3,
+            mb: 0,
+          }}
+            onClick={onAddLanguageIconClicked}
+          >
+            <AddCircle fontSize="large" />
+          </IconButton>
+          <Typography variant="body2" sx={{
+            fontFamily: "Staatliches",
+            textAlign: "center",
+            color: "text.secondary",
+            mb: 1
+          }}>add a language</Typography>
+        </Stack>}
       <List>
+        <Divider />
         {languages.map((lang) => {
           return <LanguageListItem key={lang.name} language={lang.name} />;
         })}
       </List>
-      <IconButton size="large" sx={{ width: "fit-content", m: "auto" }}>
-        <AddCircle fontSize="large" />
-      </IconButton>
     </Stack>
   );
 }
