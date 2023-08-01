@@ -48,7 +48,7 @@ export default function NavBar() {
         onOpen={() => { setDrawerOpen(true) }}
         onClose={() => { setDrawerOpen(false) }}>
         <List disablePadding>
-          <ListItemButton key={"whyJoin"} sx={listDrawerItemButton}
+          <ListItemButton key={"hamburgerMenu"} sx={listDrawerItemButton}
             onClick={() => {
               setDrawerOpen(false)
             }}
@@ -62,7 +62,7 @@ export default function NavBar() {
           <Divider />
           <ListItemButton key={"about"} sx={listDrawerItemButton}>About</ListItemButton>
           <Divider />
-          <ListItemButton key={""} sx={listDrawerItemButton}>Contact</ListItemButton>
+          <ListItemButton key={"contact"} sx={listDrawerItemButton}>Contact</ListItemButton>
           <Divider />
         </List>
       </Drawer>

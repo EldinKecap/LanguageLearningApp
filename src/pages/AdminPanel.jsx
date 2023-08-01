@@ -46,9 +46,16 @@ export default function AdminPanel() {
   const [languages, setLanguages] = useState([]);
   const [showLoading, setShowLoading] = useState(true);
   const [showInput, setShowInput] = useState(false);
-  const inputLangRef = useRef('')
+  const [showErrorEmptyLang, setShowErrorEmptyLang] = useState(false);
+
+  const inputLangRef = useRef()
   const navigator = useNavigate();
 
+  useEffect(() => {
+    if (inputLangRef.current) {
+      inputLangRef.current.focus()
+    }
+  }, [showInput])
 
   function onAddLanguageIconClicked() {
     setShowInput(true);
@@ -58,12 +65,12 @@ export default function AdminPanel() {
     const languageName = inputLangRef.current.value
     console.log(languageName);
 
-    console.log(event.type);
     if (languageName.trim() === "") {
-      console.log("Error");
+      setShowErrorEmptyLang(true)
       return
     }
-   
+    setShowErrorEmptyLang(false)
+
     if (event.key == "Enter" || event.type == "click") {
       addDoc(collection(db, 'languages'), { name: languageName }).then((res) => {
         navigator(0)
@@ -104,16 +111,22 @@ export default function AdminPanel() {
         Language List
       </Typography>
       {showInput ? <Stack gap={3} alignItems="center" mb={2}>
-        <TextField inputRef={inputLangRef} label="Enter language" onKeyDown={onLangSubmitHandler} sx={{
+        <TextField inputRef={inputLangRef} label="Enter language" onKeyUp={onLangSubmitHandler} sx={{
           width: "fit-content",
           m: "auto",
           mt: 3,
           mb: 0,
-        }} />
-        <Button 
-        className="gradientButton buttonHover" 
-        sx={{ fontFamily: "Staatliches", color: "black" }}
-        onClick={onLangSubmitHandler}
+        }}
+          error={showErrorEmptyLang}
+        />
+        {showErrorEmptyLang ? <Typography variant="body2" sx={{
+          fontFamily: "Staatliches",
+          color: "text.secondary"
+        }}>language must have a name</Typography> : <></>}
+        <Button
+          className="gradientButton buttonHover"
+          sx={{ fontFamily: "Staatliches", color: "black" }}
+          onClick={onLangSubmitHandler}
         >Submit</Button>
       </Stack>
         :
