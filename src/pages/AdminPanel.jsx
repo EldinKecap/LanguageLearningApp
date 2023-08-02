@@ -3,6 +3,7 @@ import {
   Divider,
   IconButton,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -10,33 +11,60 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import db from "../firebase/firebase";
-import { Add, AddCircle } from "@mui/icons-material";
+import { Add, AddCircle, Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import IconButtonWithLabel from "../components/IconButtonWithLabel";
+import DeleteDialog from "../components/DeleteDialog";
+
 
 function LanguageListItem({ language }) {
+  const [open, setOpen] = useState(false);
+  const navigator = useNavigate()
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  function onAddSetClickHandler() {
+    navigator(language);
+  }
+
+  function onDeleteLanguageIconClicked() {
+    setOpen(true)
+  }
+
+  function deleteFunction() {
+    const languageCollection = collection(db, "languages");
+    console.log(language);
+    const q = query(languageCollection, where("name", "==", language))
+    getDocs(q).then((querySnap) => {
+      querySnap.forEach((docSnap) => {
+        console.log(docSnap.id, " => ", docSnap.data());
+        deleteDoc(doc(db, "languages", docSnap.id)).then(() => {
+          setOpen(false)
+          navigator(0)
+        });
+      })
+    });
+  }
+
   return (
     <>
-      <ListItemButton key={language}>
+      <ListItem key={language}>
         <ListItemText
           disableTypography
           sx={{ color: "text.primary", fontSize: "2rem" }}
         >
           {language}
         </ListItemText>
-        <ListItemIcon sx={{
-          display: "flex",
-          flexDirection: "column", alignItems: "center"
-        }}>
-          <Add />
-          <Typography variant="body2" sx={{
-            fontFamily: "Staatliches",
-            color: "text.secondary",
-          }}>add set</Typography>
-        </ListItemIcon>
-      </ListItemButton>
+        <IconButtonWithLabel label="Add a set" icon={<Add />} onClickHandler={onAddSetClickHandler} />
+        <IconButtonWithLabel label="Edit" icon={<Edit />} />
+        <IconButtonWithLabel label="Delete" icon={<Delete />} onClickHandler={onDeleteLanguageIconClicked} />
+        <DeleteDialog open={open} contentText={"If you click on agree you will permanently delete this language and all of it's flash card sets"} handleClose={handleClose} title={`Do you want to delete ${language}?`} deleteFunction={deleteFunction} />
+      </ListItem>
       <Divider />
     </>
   );
