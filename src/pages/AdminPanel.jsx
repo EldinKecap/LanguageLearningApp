@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Divider,
   IconButton,
   List,
@@ -11,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import db from "../firebase/firebase";
 import { Add, AddCircle, Delete, Edit } from "@mui/icons-material";
@@ -23,6 +24,10 @@ import DeleteDialog from "../components/DeleteDialog";
 function LanguageListItem({ language }) {
   const [open, setOpen] = useState(false);
   const navigator = useNavigate()
+  const [showEditTextField, setShowEditTextField] = useState(false)
+  const [showErrorEmptyEditLang, setShowErrorEmptyEditLang] = useState(false)
+  const [requestSent, setRequestSent] = useState(false)
+  const languageEditTextfieldRef = useRef()
 
   const handleClose = () => {
     setOpen(false);
@@ -38,7 +43,6 @@ function LanguageListItem({ language }) {
 
   function deleteFunction() {
     const languageCollection = collection(db, "languages");
-    console.log(language);
     const q = query(languageCollection, where("name", "==", language))
     getDocs(q).then((querySnap) => {
       querySnap.forEach((docSnap) => {
@@ -50,6 +54,43 @@ function LanguageListItem({ language }) {
       })
     });
   }
+  useEffect(() => {
+    if (languageEditTextfieldRef.current) {
+      languageEditTextfieldRef.current.value = language;
+    }
+  }, [showEditTextField])
+  function onEditIconClicked() {
+    setShowEditTextField(curr => !curr)
+
+  }
+
+  function onLanguageEditSubmit(event) {
+    const languageName = languageEditTextfieldRef.current.value
+
+    if (languageName.trim() === "") {
+      setShowErrorEmptyEditLang(true)
+      return
+    }
+    setShowErrorEmptyEditLang(false)
+
+    if (event.key == "Enter" || event.type == "click") {
+      setRequestSent(true);
+      const languageCollection = collection(db, "languages");
+      const q = query(languageCollection, where("name", "==", language))
+      getDocs(q).then((querySnap) => {
+        querySnap.forEach((docSnap) => {
+          console.log(docSnap.id, " => ", docSnap.data());
+          const languageToUpdateRef = doc(db, "languages", docSnap.id)
+          updateDoc(languageToUpdateRef, {
+            name: languageName
+          }).then((res) => {
+            navigator(0);
+          })
+        })
+      })
+      console.log("yo");
+    }
+  }
 
   return (
     <>
@@ -58,12 +99,30 @@ function LanguageListItem({ language }) {
           disableTypography
           sx={{ color: "text.primary", fontSize: "2rem" }}
         >
-          {language}
+          {showEditTextField ?
+            <Stack direction="row" alignItems="center">
+              <TextField disabled={requestSent} label="Enter Language" autoFocus error={showErrorEmptyEditLang} onKeyUp={onLanguageEditSubmit} inputRef={languageEditTextfieldRef} />
+              <Button disabled={requestSent}
+                sx={{ ml: 3, height: "fit-content" }}
+                variant="contained"
+                onClick={onLanguageEditSubmit}
+                color="success">Submit</Button>
+              {requestSent ?
+                <CircularProgress sx={{ ml: 2 }} size="1.1em" disableShrink color="success" />
+                : <></>}
+            </Stack>
+            : language
+          }
         </ListItemText>
         <IconButtonWithLabel label="Add a set" icon={<Add />} onClickHandler={onAddSetClickHandler} />
-        <IconButtonWithLabel label="Edit" icon={<Edit />} />
+        <IconButtonWithLabel label="Edit" icon={<Edit />} onClickHandler={onEditIconClicked} />
         <IconButtonWithLabel label="Delete" icon={<Delete />} onClickHandler={onDeleteLanguageIconClicked} />
-        <DeleteDialog open={open} contentText={"If you click on agree you will permanently delete this language and all of it's flash card sets"} handleClose={handleClose} title={`Do you want to delete ${language}?`} deleteFunction={deleteFunction} />
+        <DeleteDialog open={open}
+          contentText={"If you click on agree you will permanently delete this language and all of it's flash card sets"}
+          handleClose={handleClose}
+          title={`Do you want to delete ${language}?`}
+          deleteFunction={deleteFunction} />
+
       </ListItem>
       <Divider />
     </>
@@ -91,7 +150,6 @@ export default function AdminPanel() {
 
   function onLangSubmitHandler(event) {
     const languageName = inputLangRef.current.value
-    console.log(languageName);
 
     if (languageName.trim() === "") {
       setShowErrorEmptyLang(true)
