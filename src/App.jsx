@@ -9,6 +9,7 @@ import Error from "./components/Error";
 import FlashCardSetList from "./pages/FlashCardSetList";
 import FlashCardQuiz from "./pages/FlashCardQuiz";
 import AdminPanel from "./pages/AdminPanel";
+import AdminPanelAddSet from "./pages/AdminPanelAddSet";
 
 let theme = createTheme({
   palette: {
@@ -33,6 +34,7 @@ function App() {
               element={<FlashCardQuiz />}
             />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/admin/:language" element={<AdminPanelAddSet />} />
             <Route path="*" element={<Error />} />
           </Routes>
         </Layout>
