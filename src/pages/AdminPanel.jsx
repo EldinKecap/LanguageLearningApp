@@ -97,7 +97,6 @@ function LanguageListItem({ language }) {
           });
         });
       });
-      console.log("yo");
     }
   }
 
