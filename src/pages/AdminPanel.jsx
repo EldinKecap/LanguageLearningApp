@@ -304,7 +304,7 @@ export default function AdminPanel() {
           </Stack>
         )
       )}
-      <List sx={showLoading && { display: "flex", justifyContent: "center" }}>
+      <List sx={showLoading ? { display: "flex", justifyContent: "center" } : {}}>
         <Divider />
         {showLoading ? (
           <CircularProgress color="success" sx={{ mt: 2 }} />
