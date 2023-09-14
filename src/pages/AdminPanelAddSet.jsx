@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
-import { Add, Edit } from "@mui/icons-material";
+import { Add, Edit, QuestionAnswer, QuestionMark } from "@mui/icons-material";
 import { useState } from "react";
 import {
   collection,
@@ -29,7 +29,11 @@ function SetListItem({ setNameProp, sets }) {
   const [showEditTextField, setShowEditTextField] = useState(false);
   const [showEditError, setShowEditError] = useState(false);
   const editTextFieldRef = useRef();
-
+  
+    function onAddQuestionHandler() {
+      navigator(setNameProp);
+    }
+  
   function editTextFieldHandler(event) {
     const editedSetName = editTextFieldRef.current.value.trim();
     let setExists = false;
@@ -125,19 +129,17 @@ function SetListItem({ setNameProp, sets }) {
           )}
           <Stack direction={"row"}>
             <IconButtonWithLabel
+              label="Add Question"
+              icon={<Add />}
+              onClickHandler={onAddQuestionHandler}
+            />
+            <IconButtonWithLabel
               label="Edit name"
               icon={<Edit />}
               onClickHandler={() => {
                 setShowEditTextField((curr) => !curr);
               }}
             />
-            {/* <IconButtonWithLabel
-              label="Edit name"
-              icon={<Edit />}
-              onClickHandler={() => {
-                setShowEditTextField((curr) => !curr);
-              }}
-            /> */}
           </Stack>
         </Stack>
       </ListItem>
