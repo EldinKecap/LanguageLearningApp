@@ -11,6 +11,7 @@ export default function IconButtonWithLabel({ label, onClickHandler, icon , sx =
         <Typography variant="body2" sx={{
             fontFamily: "Staatliches",
             color: "text.secondary",
+            textAlign:"center"
         }}>{label}</Typography>
     </Stack>
     )

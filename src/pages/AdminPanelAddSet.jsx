@@ -11,7 +11,13 @@ import {
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
-import { Add, Edit, QuestionAnswer, QuestionMark } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  Edit,
+  QuestionAnswer,
+  QuestionMark,
+} from "@mui/icons-material";
 import { useState } from "react";
 import {
   collection,
@@ -29,11 +35,11 @@ function SetListItem({ setNameProp, sets }) {
   const [showEditTextField, setShowEditTextField] = useState(false);
   const [showEditError, setShowEditError] = useState(false);
   const editTextFieldRef = useRef();
-  
-    function onAddQuestionHandler() {
-      navigator(setNameProp);
-    }
-  
+
+  function onAddQuestionHandler() {
+    navigator(setNameProp);
+  }
+
   function editTextFieldHandler(event) {
     const editedSetName = editTextFieldRef.current.value.trim();
     let setExists = false;
@@ -72,7 +78,7 @@ function SetListItem({ setNameProp, sets }) {
             languageID = doc.id;
             languageSets = doc.data().flashCardSets;
           });
-          console.log(languageSets);
+          // console.log(languageSets);
           languageSets.forEach((setInLanguageSets) => {
             if (setInLanguageSets.name == setNameProp) {
               setInLanguageSets.name = editedSetName;
@@ -92,6 +98,36 @@ function SetListItem({ setNameProp, sets }) {
         }
       });
     }
+  }
+
+  function onDeleteHandler() {
+    const q = query(collection(db, "languages"), where("name", "==", language));
+    getDocs(q).then((querySnap) => {
+      if (querySnap.size == 1) {
+        let languageID = "";
+        let languageSets = {};
+        querySnap.forEach((doc) => {
+          console.log(doc.id, doc.data());
+          languageID = doc.id;
+          languageSets = doc.data().flashCardSets;
+        });
+        console.log(languageSets);
+        languageSets = languageSets.filter(
+          (value) => value.name != setNameProp
+        );
+        const languageDocRef = doc(db, "languages", languageID);
+        console.log(languageSets);
+        setDoc(
+          languageDocRef,
+          {
+            flashCardSets: languageSets,
+          },
+          { merge: true }
+        ).then(() => {
+          navigator(0);
+        });
+      }
+    });
   }
 
   return (
@@ -139,6 +175,11 @@ function SetListItem({ setNameProp, sets }) {
               onClickHandler={() => {
                 setShowEditTextField((curr) => !curr);
               }}
+            />
+            <IconButtonWithLabel
+              label="Delete set"
+              icon={<Delete />}
+              onClickHandler={onDeleteHandler}
             />
           </Stack>
         </Stack>
