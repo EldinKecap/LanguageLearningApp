@@ -1,11 +1,28 @@
-import { Button, Stack, TextField, Typography } from "@mui/material";
-import React, { useReducer, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+  Button,
+  Divider,
+  List,
+  ListItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
 import { Add } from "@mui/icons-material";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import db from "../firebase/firebase";
 
 function addQuestionFormReducer(state, action) {
-  console.log(state, action);
+  // console.log(state, action);
   switch (action.type) {
     case "question_empty": {
       return {
@@ -43,8 +60,11 @@ function addQuestionFormReducer(state, action) {
 }
 
 export default function AdminPanelAddQuestion() {
+  const navigator = useNavigate();
   const { set, language } = useParams();
   const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
+  const [questions, setQuestions] = useState([]);
+
   const addQuestionRef = useRef();
   const addAnswerRef = useRef();
 
@@ -52,6 +72,25 @@ export default function AdminPanelAddQuestion() {
     questionError: false,
     answerError: false,
   });
+
+  useEffect(() => {
+    const languagesCollection = collection(db, "languages");
+    getDocs(languagesCollection).then((languagesSnapshot) => {
+      const arrOfLanguages = languagesSnapshot.docs.map((doc) => doc.data());
+      const languageWithSets = arrOfLanguages.filter(
+        (val) => val.name == language
+      );
+      if (languageWithSets[0].flashCardSets) {
+        console.log(languageWithSets);
+        let setsWithQuestions = languageWithSets[0].flashCardSets;
+        setsWithQuestions = setsWithQuestions.filter(
+          (setWithQuestions) => setWithQuestions.name == set
+        );
+        console.log(setsWithQuestions);
+        setQuestions(setsWithQuestions[0].set);
+      }
+    });
+  }, []);
 
   function onAddQuestionHandler(event) {
     const question = addQuestionRef.current.value.trim();
@@ -62,18 +101,63 @@ export default function AdminPanelAddQuestion() {
     } else {
       dispatch({ type: "question_correct" });
     }
+
     if (
       addAnswerRef.current === document.activeElement ||
       event.type == "click"
     ) {
-      console.log("answer in focus");
+      // console.log("answer in focus");
       if (answer.length == 0) {
         dispatch({ type: "answer_empty" });
+        return;
       } else {
         dispatch({ type: "answer_correct" });
       }
     }
-    console.log(event.type);
+
+    if (question.length == 0) {
+      return;
+    }
+
+    if (event.key == "Enter" || event.type == "click") {
+      const q = query(
+        collection(db, "languages"),
+        where("name", "==", language)
+      );
+      getDocs(q).then((querySnap) => {
+        if (querySnap.size == 1) {
+          let languageID = "";
+          let languageSets = {};
+          querySnap.forEach((doc) => {
+            console.log(doc.id, doc.data());
+            languageID = doc.id;
+            languageSets = doc.data().flashCardSets;
+          });
+          languageSets.forEach((setInLanguageSets) => {
+            console.log(setInLanguageSets.name, set);
+            if (setInLanguageSets.name == set) {
+              setInLanguageSets.set.push({
+                flashCardQuestion: question,
+                flashCardAnswer: answer,
+              });
+            }
+          });
+          console.log(languageSets);
+
+          const languageDocRef = doc(db, "languages", languageID);
+          console.log(languageSets);
+          setDoc(
+            languageDocRef,
+            {
+              flashCardSets: languageSets,
+            },
+            { merge: true }
+          ).then(() => {
+            navigator(0);
+          });
+        }
+      });
+    }
   }
 
   return (
@@ -142,6 +226,31 @@ export default function AdminPanelAddQuestion() {
           icon={<Add />}
         />
       )}
+      <Divider />
+      <List>
+        {questions.length > 0 ? (
+          questions.map((question) => {
+            return (
+              <>
+                <ListItem key={question.flashCardQuestion}>
+                  <Typography
+                    sx={{
+                      fontFamily: "Staatliches",
+                      color: "white",
+                      fontSize: "2rem",
+                    }}
+                  >
+                    {question.flashCardQuestion}
+                  </Typography>
+                </ListItem>
+                <Divider />
+              </>
+            );
+          })
+        ) : (
+          <></>
+        )}
+      </List>
     </>
   );
 }
