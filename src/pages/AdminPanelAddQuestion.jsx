@@ -1,5 +1,9 @@
 import {
   Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
   Divider,
   List,
   ListItem,
@@ -10,7 +14,7 @@ import {
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
-import { Add } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import {
   collection,
   doc,
@@ -57,6 +61,45 @@ function addQuestionFormReducer(state, action) {
       };
     }
   }
+}
+
+function QuestionCard({ question }) {
+  return (
+    <Card sx={{ minWidth: 250 }}>
+      <CardContent>
+        <Stack>
+          <Typography
+            sx={{
+              fontFamily: "Staatliches",
+              color: "text.secondary",
+              fontSize: "1rem",
+            }}
+          >
+            {"Question: "}{" "}
+            <Typography fontSize={"1.3rem"}>
+              {question.flashCardQuestion}
+            </Typography>
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "Staatliches",
+              color: "text.secondary",
+              fontSize: "1rem",
+            }}
+          >
+            {"Answer: "}
+            <Typography fontSize={"1.3rem"}>
+              {question.flashCardAnswer}
+            </Typography>
+          </Typography>
+        </Stack>
+      </CardContent>
+      <CardActions sx={{ justifyContent: "center" }}>
+        <IconButtonWithLabel label={"Edit"} icon={<Edit />} />
+        <IconButtonWithLabel label={"Delete"} icon={<Delete />} />
+      </CardActions>
+    </Card>
+  );
 }
 
 export default function AdminPanelAddQuestion() {
@@ -183,7 +226,7 @@ export default function AdminPanelAddQuestion() {
         variant="h5"
         textAlign={"center"}
         color={"white"}
-        sx={{ fontFamily: "Staatliches", color: "text.secondary" }}
+        sx={{ fontFamily: "Staatliches", color: "text.secondary", mb: 3 }}
       >
         {set}
       </Typography>
@@ -235,43 +278,21 @@ export default function AdminPanelAddQuestion() {
           icon={<Add />}
         />
       )}
-      <Divider />
-      <List>
+      <Stack
+        direction={"row"}
+        gap
+        flexWrap={"wrap"}
+        justifyContent={"center"}
+        mt={3}
+      >
         {questions && questions.length > 0 ? (
           questions.map((question) => {
-            return (
-              <>
-                <ListItem key={question.flashCardQuestion}>
-                  <Stack>
-                    <Typography
-                      sx={{
-                        fontFamily: "Staatliches",
-                        color: "white",
-                        fontSize: "1.2rem",
-                      }}
-                    >
-                      {"Question: "} <Typography>{question.flashCardQuestion}</Typography>
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontFamily: "Staatliches",
-                        color: "white",
-                        fontSize: "1rem",
-                      }}
-                    >
-                      {"Answer: " }
-                      <Typography>{question.flashCardAnswer}</Typography>
-                    </Typography>
-                  </Stack>
-                </ListItem>
-                <Divider />
-              </>
-            );
+            return <QuestionCard question={question} />;
           })
         ) : (
           <></>
         )}
-      </List>
+      </Stack>
     </>
   );
 }
