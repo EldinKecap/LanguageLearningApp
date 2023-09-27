@@ -136,10 +136,19 @@ export default function AdminPanelAddQuestion() {
           languageSets.forEach((setInLanguageSets) => {
             console.log(setInLanguageSets.name, set);
             if (setInLanguageSets.name == set) {
-              setInLanguageSets.set.push({
-                flashCardQuestion: question,
-                flashCardAnswer: answer,
-              });
+              if (setInLanguageSets.set == undefined) {
+                setInLanguageSets.set = [
+                  {
+                    flashCardQuestion: question,
+                    flashCardAnswer: answer,
+                  },
+                ];
+              } else {
+                setInLanguageSets.set.push({
+                  flashCardQuestion: question,
+                  flashCardAnswer: answer,
+                });
+              }
             }
           });
           console.log(languageSets);
@@ -228,20 +237,32 @@ export default function AdminPanelAddQuestion() {
       )}
       <Divider />
       <List>
-        {questions.length > 0 ? (
+        {questions && questions.length > 0 ? (
           questions.map((question) => {
             return (
               <>
                 <ListItem key={question.flashCardQuestion}>
-                  <Typography
-                    sx={{
-                      fontFamily: "Staatliches",
-                      color: "white",
-                      fontSize: "2rem",
-                    }}
-                  >
-                    {question.flashCardQuestion}
-                  </Typography>
+                  <Stack>
+                    <Typography
+                      sx={{
+                        fontFamily: "Staatliches",
+                        color: "white",
+                        fontSize: "1.2rem",
+                      }}
+                    >
+                      {"Question: "} <Typography>{question.flashCardQuestion}</Typography>
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Staatliches",
+                        color: "white",
+                        fontSize: "1rem",
+                      }}
+                    >
+                      {"Answer: " }
+                      <Typography>{question.flashCardAnswer}</Typography>
+                    </Typography>
+                  </Stack>
                 </ListItem>
                 <Divider />
               </>
