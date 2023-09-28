@@ -64,7 +64,8 @@ function addQuestionFormReducer(state, action) {
   }
 }
 
-function QuestionCard({ question }) {
+function QuestionCard({ question, language, set }) {
+  const navigator = useNavigate();
   const [showEditForm, setShowEditForm] = useState(false);
   const editQuestionRef = useRef();
   const editAnswerRef = useRef();
@@ -74,10 +75,10 @@ function QuestionCard({ question }) {
   });
 
   function onEditQuestionHandler(event) {
-    const question = editQuestionRef.current.value.trim();
-    const answer = editAnswerRef.current.value.trim();
+    const questionToEdit = editQuestionRef.current.value.trim();
+    const answerToEdit = editAnswerRef.current.value.trim();
 
-    if (question.length == 0) {
+    if (questionToEdit.length == 0) {
       dispatch({ type: "question_empty" });
     } else {
       dispatch({ type: "question_correct" });
@@ -88,7 +89,7 @@ function QuestionCard({ question }) {
       event.type == "click"
     ) {
       // console.log("answer in focus");
-      if (answer.length == 0) {
+      if (answerToEdit.length == 0) {
         dispatch({ type: "answer_empty" });
         return;
       } else {
@@ -96,8 +97,61 @@ function QuestionCard({ question }) {
       }
     }
 
-    if (question.length == 0) {
+    if (questionToEdit.length == 0) {
       return;
+    }
+    // console.log(questionToEdit);
+    // console.log(answerToEdit);
+    if (event.key == "Enter" || event.type == "click") {
+      const q = query(
+        collection(db, "languages"),
+        where("name", "==", language)
+      );
+      getDocs(q).then((querySnap) => {
+        if (querySnap.size == 1) {
+          let languageID = "";
+          let languageSets = {};
+
+          querySnap.forEach((doc) => {
+            languageID = doc.id;
+            languageSets = doc.data().flashCardSets;
+          });
+          //////////////////////STO OVO LOGGA VEC MODIFIKOVAN ARRAY
+          // console.log(languageSets);
+          languageSets.forEach((setInLanguageSets) => {
+            if (setInLanguageSets.name == set) {
+              ////////////// I OVO 
+              console.log(setInLanguageSets);
+              //////////OVO KOMENTARISAT ZA DEMONSTRACIJU
+              setInLanguageSets.set.forEach((questionInSet,index) => {
+                if (
+                  questionInSet.flashCardQuestion ==
+                  question.flashCardQuestion
+                ) {
+                  // console.log(questionInSet);
+                  setInLanguageSets.set[index] = {
+                    flashCardQuestion: questionToEdit,
+                    flashCardAnswer: answerToEdit,
+                  };
+                }
+              });
+              //////////////////////
+            }
+          });
+          console.log(languageSets);
+          const languageDocRef = doc(db, "languages", languageID);
+          console.log(languageSets);
+          setDoc(
+            languageDocRef,
+            {
+              flashCardSets: languageSets,
+            },
+            { merge: true }
+          ).then(() => {
+            navigator(0);
+          });
+        }
+      });
     }
   }
 
@@ -157,7 +211,7 @@ function QuestionCard({ question }) {
               sx={{ fontFamily: "Staatliches", fontSize: "1rem" }}
               onClick={onEditQuestionHandler}
             >
-              Submit 
+              Submit
             </Button>
           </Stack>
         ) : (
@@ -225,12 +279,12 @@ export default function AdminPanelAddQuestion() {
         (val) => val.name == language
       );
       if (languageWithSets[0].flashCardSets) {
-        console.log(languageWithSets);
+        // console.log(languageWithSets);
         let setsWithQuestions = languageWithSets[0].flashCardSets;
         setsWithQuestions = setsWithQuestions.filter(
           (setWithQuestions) => setWithQuestions.name == set
         );
-        console.log(setsWithQuestions);
+        // console.log(setsWithQuestions);
         setQuestions(setsWithQuestions[0].set);
       }
     });
@@ -392,6 +446,8 @@ export default function AdminPanelAddQuestion() {
               <QuestionCard
                 key={question.flashCardQuestion}
                 question={question}
+                language={language}
+                set={set}
               />
             );
           })
