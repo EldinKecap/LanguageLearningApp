@@ -64,38 +64,63 @@ function addQuestionFormReducer(state, action) {
 }
 
 function QuestionCard({ question }) {
+  const [showEditForm, setShowEditForm] = useState(false);
+
   return (
-    <Card sx={{ minWidth: 250 }}>
+    <Card sx={{ minWidth: 250 ,display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
       <CardContent>
-        <Stack>
-          <Typography
-            sx={{
-              fontFamily: "Staatliches",
-              color: "text.secondary",
-              fontSize: "1rem",
-            }}
-          >
-            {"Question: "}{" "}
-            <Typography fontSize={"1.3rem"}>
-              {question.flashCardQuestion}
+        {showEditForm ? (
+          <Stack gap={2}>
+            <TextField
+              defaultValue={question.flashCardQuestion}
+              label="Question"
+            />
+            <TextField defaultValue={question.flashCardAnswer} label="Answer" />
+            <Button
+              className="gradientButton"
+              variant="contained"
+              sx={{ fontFamily: "Staatliches", fontSize:"1rem" }}
+            >
+              Submit
+            </Button>
+          </Stack>
+        ) : (
+          <Stack sx={{ ml: 1 }}>
+            <Typography
+              sx={{
+                fontFamily: "Staatliches",
+                color: "text.secondary",
+                fontSize: "1.1rem",
+              }}
+            >
+              {"Question: "}
+              <Typography fontSize={"1.3rem"}>
+                {question.flashCardQuestion}
+              </Typography>
             </Typography>
-          </Typography>
-          <Typography
-            sx={{
-              fontFamily: "Staatliches",
-              color: "text.secondary",
-              fontSize: "1rem",
-            }}
-          >
-            {"Answer: "}
-            <Typography fontSize={"1.3rem"}>
-              {question.flashCardAnswer}
+            <Typography
+              sx={{
+                fontFamily: "Staatliches",
+                color: "text.secondary",
+                fontSize: "1.1rem",
+              }}
+            >
+              {"Answer: "}
+              <Typography fontSize={"1.3rem"}>
+                {question.flashCardAnswer}
+              </Typography>
             </Typography>
-          </Typography>
-        </Stack>
+          </Stack>
+        )}
       </CardContent>
-      <CardActions sx={{ justifyContent: "center" }}>
-        <IconButtonWithLabel label={"Edit"} icon={<Edit />} />
+      <CardActions sx={{ justifyContent: "center" , alignItems:"end"}}>
+        <IconButtonWithLabel
+          label={"Edit"}
+          icon={<Edit />}
+          onClickHandler={() => {
+            setShowEditForm((curr) => !curr);
+          }}
+        />
         <IconButtonWithLabel label={"Delete"} icon={<Delete />} />
       </CardActions>
     </Card>
