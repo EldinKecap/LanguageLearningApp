@@ -4,6 +4,7 @@ import {
   CardActionArea,
   CardActions,
   CardContent,
+  CircularProgress,
   Divider,
   List,
   ListItem,
@@ -65,23 +66,98 @@ function addQuestionFormReducer(state, action) {
 
 function QuestionCard({ question }) {
   const [showEditForm, setShowEditForm] = useState(false);
+  const editQuestionRef = useRef();
+  const editAnswerRef = useRef();
+  const [formErrorState, dispatch] = useReducer(addQuestionFormReducer, {
+    questionError: false,
+    answerError: false,
+  });
+
+  function onEditQuestionHandler(event) {
+    const question = editQuestionRef.current.value.trim();
+    const answer = editAnswerRef.current.value.trim();
+
+    if (question.length == 0) {
+      dispatch({ type: "question_empty" });
+    } else {
+      dispatch({ type: "question_correct" });
+    }
+
+    if (
+      editAnswerRef.current === document.activeElement ||
+      event.type == "click"
+    ) {
+      // console.log("answer in focus");
+      if (answer.length == 0) {
+        dispatch({ type: "answer_empty" });
+        return;
+      } else {
+        dispatch({ type: "answer_correct" });
+      }
+    }
+
+    if (question.length == 0) {
+      return;
+    }
+  }
 
   return (
-    <Card sx={{ minWidth: 250 ,display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
+    <Card
+      sx={{
+        minWidth: 250,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
       <CardContent>
         {showEditForm ? (
           <Stack gap={2}>
             <TextField
+              inputRef={editQuestionRef}
               defaultValue={question.flashCardQuestion}
               label="Question"
+              error={formErrorState.questionError}
+              onKeyUp={onEditQuestionHandler}
             />
-            <TextField defaultValue={question.flashCardAnswer} label="Answer" />
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: "Staatliches",
+                color: "text.secondary",
+                textAlign: "center",
+              }}
+            >
+              {formErrorState.questionErrorMessage
+                ? formErrorState.questionErrorMessage
+                : ""}
+            </Typography>
+            <TextField
+              inputRef={editAnswerRef}
+              defaultValue={question.flashCardAnswer}
+              label="Answer"
+              error={formErrorState.answerError}
+              onKeyUp={onEditQuestionHandler}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: "Staatliches",
+                color: "text.secondary",
+                textAlign: "center",
+              }}
+            >
+              {formErrorState.answerErrorMessage
+                ? formErrorState.answerErrorMessage
+                : ""}
+            </Typography>
             <Button
               className="gradientButton"
               variant="contained"
-              sx={{ fontFamily: "Staatliches", fontSize:"1rem" }}
+              sx={{ fontFamily: "Staatliches", fontSize: "1rem" }}
+              onClick={onEditQuestionHandler}
             >
-              Submit
+              Submit 
             </Button>
           </Stack>
         ) : (
@@ -94,9 +170,9 @@ function QuestionCard({ question }) {
               }}
             >
               {"Question: "}
-              <Typography fontSize={"1.3rem"}>
-                {question.flashCardQuestion}
-              </Typography>
+            </Typography>
+            <Typography fontSize={"1.3rem"}>
+              {question.flashCardQuestion}
             </Typography>
             <Typography
               sx={{
@@ -106,14 +182,14 @@ function QuestionCard({ question }) {
               }}
             >
               {"Answer: "}
-              <Typography fontSize={"1.3rem"}>
-                {question.flashCardAnswer}
-              </Typography>
+            </Typography>
+            <Typography fontSize={"1.3rem"}>
+              {question.flashCardAnswer}
             </Typography>
           </Stack>
         )}
       </CardContent>
-      <CardActions sx={{ justifyContent: "center" , alignItems:"end"}}>
+      <CardActions sx={{ justifyContent: "center", alignItems: "end" }}>
         <IconButtonWithLabel
           label={"Edit"}
           icon={<Edit />}
@@ -312,7 +388,12 @@ export default function AdminPanelAddQuestion() {
       >
         {questions && questions.length > 0 ? (
           questions.map((question) => {
-            return <QuestionCard question={question} />;
+            return (
+              <QuestionCard
+                key={question.flashCardQuestion}
+                question={question}
+              />
+            );
           })
         ) : (
           <></>
