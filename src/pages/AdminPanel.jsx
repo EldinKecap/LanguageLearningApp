@@ -74,9 +74,9 @@ function LanguageListItem({ language }) {
   }
 
   function onLanguageEditSubmit(event) {
-    const languageName = languageEditTextfieldRef.current.value;
+    const languageName = languageEditTextfieldRef.current.value.trim().toLowerCase();
 
-    if (languageName.trim() === "") {
+    if (languageName === "") {
       setShowErrorEmptyEditLang(true);
       return;
     }
@@ -191,9 +191,9 @@ export default function AdminPanel() {
   }
 
   function onLangSubmitHandler(event) {
-    const languageName = inputLangRef.current.value;
+    const languageName = inputLangRef.current.value.trim().toLowerCase();
 
-    if (languageName.trim() === "") {
+    if (languageName === "") {
       setShowErrorEmptyLang(true);
       return;
     }

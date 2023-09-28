@@ -121,7 +121,7 @@ function QuestionCard({ question, language, set }) {
           languageSets.forEach((setInLanguageSets) => {
             if (setInLanguageSets.name == set) {
               ////////////// I OVO 
-              console.log(setInLanguageSets);
+              // console.log(setInLanguageSets);
               //////////OVO KOMENTARISAT ZA DEMONSTRACIJU
               setInLanguageSets.set.forEach((questionInSet,index) => {
                 if (
@@ -148,7 +148,7 @@ function QuestionCard({ question, language, set }) {
             },
             { merge: true }
           ).then(() => {
-            navigator(0);
+            // navigator(0);
           });
         }
       });
