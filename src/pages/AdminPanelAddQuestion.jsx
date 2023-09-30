@@ -120,13 +120,12 @@ function QuestionCard({ question, language, set }) {
           // console.log(languageSets);
           languageSets.forEach((setInLanguageSets) => {
             if (setInLanguageSets.name == set) {
-              ////////////// I OVO 
+              ////////////// I OVO
               // console.log(setInLanguageSets);
               //////////OVO KOMENTARISAT ZA DEMONSTRACIJU
-              setInLanguageSets.set.forEach((questionInSet,index) => {
+              setInLanguageSets.set.forEach((questionInSet, index) => {
                 if (
-                  questionInSet.flashCardQuestion ==
-                  question.flashCardQuestion
+                  questionInSet.flashCardQuestion == question.flashCardQuestion
                 ) {
                   // console.log(questionInSet);
                   setInLanguageSets.set[index] = {
@@ -148,11 +147,43 @@ function QuestionCard({ question, language, set }) {
             },
             { merge: true }
           ).then(() => {
-            // navigator(0);
+            navigator(0);
           });
         }
       });
     }
+  }
+
+  function onDeleteHandler() {
+    const q = query(collection(db, "languages"), where("name", "==", language));
+    getDocs(q).then((querySnap) => {
+      if (querySnap.size == 1) {
+        let languageID = "";
+        let languageSets = {};
+        querySnap.forEach((doc) => {
+          languageID = doc.id;
+          languageSets = doc.data().flashCardSets;
+        });
+        languageSets.forEach((setInLanguageSets) => {
+          if (setInLanguageSets.name == set) {
+            setInLanguageSets.set = setInLanguageSets.set.filter((value) => {
+              return value.flashCardQuestion != question.flashCardQuestion;
+            });
+          }
+        });
+        const languageDocRef = doc(db, "languages", languageID);
+        console.log(languageSets);
+        setDoc(
+          languageDocRef,
+          {
+            flashCardSets: languageSets,
+          },
+          { merge: true }
+        ).then(() => {
+          navigator(0);
+        });
+      }
+    });
   }
 
   return (
@@ -251,7 +282,11 @@ function QuestionCard({ question, language, set }) {
             setShowEditForm((curr) => !curr);
           }}
         />
-        <IconButtonWithLabel label={"Delete"} icon={<Delete />} />
+        <IconButtonWithLabel
+          label={"Delete"}
+          icon={<Delete />}
+          onClickHandler={onDeleteHandler}
+        />
       </CardActions>
     </Card>
   );
