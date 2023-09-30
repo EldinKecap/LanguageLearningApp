@@ -25,6 +25,7 @@ import {
   where,
 } from "firebase/firestore";
 import db from "../firebase/firebase";
+import DeleteDialog from "../components/DeleteDialog";
 
 function addQuestionFormReducer(state, action) {
   // console.log(state, action);
@@ -66,6 +67,7 @@ function addQuestionFormReducer(state, action) {
 
 function QuestionCard({ question, language, set }) {
   const navigator = useNavigate();
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const editQuestionRef = useRef();
   const editAnswerRef = useRef();
@@ -155,6 +157,14 @@ function QuestionCard({ question, language, set }) {
   }
 
   function onDeleteHandler() {
+    setOpenDeleteConfirmation(true);
+  }
+
+  function handleClose() {
+    setOpenDeleteConfirmation(false);
+  }
+
+  function deleteFunction() {
     const q = query(collection(db, "languages"), where("name", "==", language));
     getDocs(q).then((querySnap) => {
       if (querySnap.size == 1) {
@@ -286,6 +296,15 @@ function QuestionCard({ question, language, set }) {
           label={"Delete"}
           icon={<Delete />}
           onClickHandler={onDeleteHandler}
+        />
+        <DeleteDialog
+          open={openDeleteConfirmation}
+          contentText={
+            "If you click on agree you will permanently delete this question and answer"
+          }
+          handleClose={handleClose}
+          title={`Do you want to delete "${question.flashCardQuestion}" question and answer?`}
+          deleteFunction={deleteFunction}
         />
       </CardActions>
     </Card>

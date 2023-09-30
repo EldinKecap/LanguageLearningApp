@@ -28,10 +28,12 @@ import {
   where,
 } from "firebase/firestore";
 import db from "../firebase/firebase";
+import DeleteDialog from "../components/DeleteDialog";
 
 function SetListItem({ setNameProp, sets }) {
   const { language } = useParams();
   const navigator = useNavigate();
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [showEditTextField, setShowEditTextField] = useState(false);
   const [showEditError, setShowEditError] = useState(false);
   const editTextFieldRef = useRef();
@@ -41,7 +43,7 @@ function SetListItem({ setNameProp, sets }) {
   }
 
   function editTextFieldHandler(event) {
-    const editedSetName = editTextFieldRef.current.value.trim();
+    const editedSetName = editTextFieldRef.current.value.trim().toLowerCase();
     let setExists = false;
     if (editedSetName.trim() === "") {
       setShowEditError(true);
@@ -101,6 +103,14 @@ function SetListItem({ setNameProp, sets }) {
   }
 
   function onDeleteHandler() {
+    setOpenDeleteConfirmation(true);
+  }
+
+  function handleClose() {
+    setOpenDeleteConfirmation(false);
+  }
+
+  function deleteFunction() {
     const q = query(collection(db, "languages"), where("name", "==", language));
     getDocs(q).then((querySnap) => {
       if (querySnap.size == 1) {
@@ -180,6 +190,15 @@ function SetListItem({ setNameProp, sets }) {
               label="Delete set"
               icon={<Delete />}
               onClickHandler={onDeleteHandler}
+            />
+            <DeleteDialog
+              open={openDeleteConfirmation}
+              contentText={
+                "If you click on agree you will permanently delete this set and all its questions"
+              }
+              handleClose={handleClose}
+              title={`Do you want to delete "${setNameProp}" set?`}
+              deleteFunction={deleteFunction}
             />
           </Stack>
         </Stack>
