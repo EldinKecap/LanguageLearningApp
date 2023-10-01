@@ -11,6 +11,7 @@ import FlashCardQuiz from "./pages/FlashCardQuiz";
 import AdminPanel from "./pages/AdminPanel";
 import AdminPanelAddSet from "./pages/AdminPanelAddSet";
 import AdminPanelAddQuestion from "./pages/AdminPanelAddQuestion";
+import AdminPanelAddSpecialChars from "./pages/AdminPanelAddSpecialChars";
 
 let theme = createTheme({
   palette: {
@@ -36,6 +37,7 @@ function App() {
             />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/admin/:language" element={<AdminPanelAddSet />} />
+            <Route path="/admin/:language/specialchars" element={<AdminPanelAddSpecialChars />} />
             <Route path="/admin/:language/:set" element={<AdminPanelAddQuestion />} />
             <Route path="*" element={<Error />} />
           </Routes>

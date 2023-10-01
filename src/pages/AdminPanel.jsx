@@ -24,7 +24,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import db from "../firebase/firebase";
-import { Add, AddCircle, Delete, Edit } from "@mui/icons-material";
+import { Add, AddBox, AddCircle, Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
 import DeleteDialog from "../components/DeleteDialog";
@@ -74,7 +74,9 @@ function LanguageListItem({ language }) {
   }
 
   function onLanguageEditSubmit(event) {
-    const languageName = languageEditTextfieldRef.current.value.trim().toLowerCase();
+    const languageName = languageEditTextfieldRef.current.value
+      .trim()
+      .toLowerCase();
 
     if (languageName === "") {
       setShowErrorEmptyEditLang(true);
@@ -100,6 +102,9 @@ function LanguageListItem({ language }) {
     }
   }
 
+  function onSpecialCharsClicked() {
+    navigator(language + "/specialchars");
+  }
   return (
     <>
       <ListItem key={language}>
@@ -141,6 +146,11 @@ function LanguageListItem({ language }) {
             language
           )}
         </ListItemText>
+        <IconButtonWithLabel
+          label="Special chars"
+          icon={<AddBox />}
+          onClickHandler={onSpecialCharsClicked}
+        />
         <IconButtonWithLabel
           label="Add a set"
           icon={<Add />}
@@ -304,7 +314,9 @@ export default function AdminPanel() {
           </Stack>
         )
       )}
-      <List sx={showLoading ? { display: "flex", justifyContent: "center" } : {}}>
+      <List
+        sx={showLoading ? { display: "flex", justifyContent: "center" } : {}}
+      >
         <Divider />
         {showLoading ? (
           <CircularProgress color="success" sx={{ mt: 2 }} />
