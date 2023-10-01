@@ -3,6 +3,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  CircularProgress,
   IconButton,
   Stack,
   TextField,
@@ -28,10 +29,12 @@ export default function AdminPanelAddSpecialChars() {
   const [specialCharacters, setSpecialCharacters] = useState([]);
   const [showAddSpecialCharForm, setShowAddSpecialCharForm] = useState(false);
 
+  const [showLoading, setShowLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const specialCharTextFieldRef = useRef();
 
   useEffect(() => {
+    setShowLoading(true);
     const languagesCollection = collection(db, "languages");
     getDocs(languagesCollection).then((languagesSnapshot) => {
       const arrOfLanguages = languagesSnapshot.docs.map((doc) => doc.data());
@@ -41,6 +44,7 @@ export default function AdminPanelAddSpecialChars() {
       if (languageWithSets[0].specialCharacters != undefined) {
         setSpecialCharacters(languageWithSets[0].specialCharacters);
       }
+      setShowLoading(false);
     });
   }, []);
 
@@ -101,6 +105,34 @@ export default function AdminPanelAddSpecialChars() {
     }
   }
 
+  function onDeleteHandler(char) {
+    const q = query(collection(db, "languages"), where("name", "==", language));
+    getDocs(q).then((querySnap) => {
+      if (querySnap.size == 1) {
+        let languageID = "";
+        let languageData = {};
+        querySnap.forEach((doc) => {
+          console.log(doc.id, doc.data());
+          languageID = doc.id;
+          languageData = doc.data();
+        });
+        let specialCharacters = languageData.specialCharacters.filter(
+          (val) => val != char
+        );
+        console.log(specialCharacters);
+        const languageDocRef = doc(db, "languages", languageID);
+        setDoc(
+          languageDocRef,
+          {
+            specialCharacters: specialCharacters,
+          },
+          { merge: true }
+        ).then(() => {
+          navigator(0);
+        });
+      }
+    });
+  }
   return (
     <>
       <Typography
@@ -149,12 +181,13 @@ export default function AdminPanelAddSpecialChars() {
         {specialCharacters.length > 0 ? (
           specialCharacters.map((char) => {
             return (
-              <Card sx={{ maxWidth: "200px", alignItems: "center" }}>
+              <Card key={char} sx={{ maxWidth: "200px", alignItems: "center" }}>
                 <CardContent sx={{ justifyContent: "center" }}>
                   <Typography
                     variant="body1"
                     fontSize={"2rem"}
                     textAlign={"center"}
+                    fontWeight={"500"}
                   >
                     {char}
                   </Typography>
@@ -163,11 +196,16 @@ export default function AdminPanelAddSpecialChars() {
                   <IconButtonWithLabel
                     icon={<Delete />}
                     label={"Delete character"}
+                    onClickHandler={() => {
+                      onDeleteHandler(char);
+                    }}
                   />
                 </CardActions>
               </Card>
             );
           })
+        ) : showLoading ? (
+          <CircularProgress color="success" />
         ) : (
           <Typography
             variant="body1"
