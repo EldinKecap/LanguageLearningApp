@@ -224,7 +224,7 @@ export default function AdminPanelAddSet() {
         (val) => val.name == language
       );
       if (languageWithSets[0].flashCardSets) {
-        // console.log(languageWithSets);
+        languageWithSets[0].flashCardSets.reverse()
         setSets((curr) => languageWithSets[0].flashCardSets);
       }
       // setShowLoading(false);

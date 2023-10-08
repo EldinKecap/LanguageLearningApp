@@ -17,17 +17,16 @@ export default function FlashCard({
   nextQuestion,
   numberOfQuestions,
   currentQuestionNumber,
+  specialCharacters,
 }) {
   const [showAnswer, setShowAnswer] = useState(false);
   const answerRef = useRef();
   const navigator = useNavigate();
-
-
+  console.log(specialCharacters);
   function onShowAnswerClickedHandler() {
     setShowAnswer((curr) => !curr);
   }
-  console.log(numberOfQuestions,
-    currentQuestionNumber);
+  console.log(numberOfQuestions, currentQuestionNumber);
   return (
     <Stack height="100vh">
       <Stack
@@ -39,7 +38,7 @@ export default function FlashCard({
         <Logo />
       </Stack>
       <LinearProgress variant="determinate" value={completion} />
-      {completion != 100 ?
+      {completion != 100 ? (
         <Stack
           display="row"
           alignItems="Baseline"
@@ -54,7 +53,7 @@ export default function FlashCard({
               color: "text.primary",
             }}
           >
-            {flashCardQuestion}
+            {currentQuestionNumber + 1 + ". " + flashCardQuestion}
           </Typography>
           {showAnswer && (
             <Typography
@@ -67,6 +66,27 @@ export default function FlashCard({
               {flashCardAnswer}
             </Typography>
           )}
+          <Stack direction={"row"} justifyContent={"end"} width={"100%"}>
+            {specialCharacters ? (
+              specialCharacters.map((char) => {
+                return (
+                  <Button
+                    key={char}
+                    variant="contained"
+                    onClick={() => {
+                      answerRef.current.focus();
+                      answerRef.current.value += char;
+                    }}
+                    color="success"
+                  >
+                    {char}
+                  </Button>
+                );
+              })
+            ) : (
+              <></>
+            )}
+          </Stack>
           <TextField
             inputRef={answerRef}
             variant="standard"
@@ -87,10 +107,13 @@ export default function FlashCard({
               <Button variant="outlined" onClick={onShowAnswerClickedHandler}>
                 Show answer
               </Button>
-              <Button variant="outlined" onClick={() => {
-                setShowAnswer(false);
-                nextQuestion();
-              }}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setShowAnswer(false);
+                  nextQuestion();
+                }}
+              >
                 Skip
               </Button>
             </Stack>
@@ -109,33 +132,38 @@ export default function FlashCard({
                 }
               }}
               sx={{
-                fontFamily: "Staatliches"
-                , fontSize: "1.2rem"
+                fontFamily: "Staatliches",
+                fontSize: "1.2rem",
               }}
-
             >
               Submit
             </Button>
           </Stack>
         </Stack>
-        : <Stack m={"auto"} maxWidth={350} alignItems="center" gap={2}>
+      ) : (
+        <Stack m={"auto"} maxWidth={350} alignItems="center" gap={2}>
           <Typography
             variant="h2"
             sx={{
               fontFamily: "Staatliches",
               color: "text.primary",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
-            You have completed
-            this set
+            You have completed this set
           </Typography>
-          <Button variant="contained" className="gradientButton buttonHover"
+          <Button
+            variant="contained"
+            className="gradientButton buttonHover"
             sx={{ fontFamily: "Staatliches" }}
-            onClick={() => { navigator(-1) }}
-          >Choose a next set</Button>
+            onClick={() => {
+              navigator(-1);
+            }}
+          >
+            Choose a next set
+          </Button>
         </Stack>
-      }
+      )}
     </Stack>
   );
 }

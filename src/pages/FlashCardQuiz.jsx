@@ -10,26 +10,28 @@ export default function FlashCardQuiz() {
   const [currentFlashCardSet, setCurrentFlashCardSet] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [completion, setCompletion] = useState(0);
-
+  const [specialCharacters, setSpecialCharacters] = useState([]);
   useEffect(() => {
     const languagesRef = collection(db, "languages");
     const languageQuery = query(languagesRef, where("name", "==", language));
 
     getDocs(languageQuery).then((languageSnapshot) => {
       // i used index [0] at the end to get rid of an outer array of map
-      const flashCardSets = languageSnapshot.docs.map(
-        (doc) => doc.data().flashCardSets
-      )[0];
+      const flashCardSets = languageSnapshot.docs.map((doc) => {
+        setSpecialCharacters((curr) => doc.data().specialCharacters);
+        return doc.data().flashCardSets;
+      })[0];
 
+      console.log(flashCardSets);
       const flashCardSet = flashCardSets.filter(
         (set) => set.name == flashCardSetName
       )[0].set;
 
-      console.log(flashCardSet);
       setCurrentFlashCardSet((curr) => flashCardSet);
     });
   }, []);
 
+  console.log(specialCharacters);
   return currentFlashCardSet.length > 0 ? (
     <FlashCard
       flashCardAnswer={currentFlashCardSet[currentQuestion].flashCardAnswer}
@@ -46,6 +48,7 @@ export default function FlashCardQuiz() {
       }}
       numberOfQuestions={currentFlashCardSet.length}
       currentQuestionNumber={currentQuestion}
+      specialCharacters={specialCharacters}
     />
   ) : (
     <Stack height="100vh" alignItems={"center"} justifyContent={"center"}>

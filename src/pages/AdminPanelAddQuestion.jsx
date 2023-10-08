@@ -65,7 +65,7 @@ function addQuestionFormReducer(state, action) {
   }
 }
 
-function QuestionCard({ question, language, set }) {
+function QuestionCard({ question, language, set, questionNumber }) {
   const navigator = useNavigate();
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -264,7 +264,7 @@ function QuestionCard({ question, language, set }) {
                 fontSize: "1.1rem",
               }}
             >
-              {"Question: "}
+              {"Question " + questionNumber + " : "}
             </Typography>
             <Typography fontSize={"1.3rem"}>
               {question.flashCardQuestion}
@@ -314,7 +314,7 @@ function QuestionCard({ question, language, set }) {
 export default function AdminPanelAddQuestion() {
   const navigator = useNavigate();
   const { set, language } = useParams();
-  const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
+  // const [showAddQuestionForm, setShowAddQuestionForm] = useState(true);
   const [questions, setQuestions] = useState([]);
 
   const addQuestionRef = useRef();
@@ -338,7 +338,8 @@ export default function AdminPanelAddQuestion() {
         setsWithQuestions = setsWithQuestions.filter(
           (setWithQuestions) => setWithQuestions.name == set
         );
-        // console.log(setsWithQuestions);
+
+        setsWithQuestions[0].set = setsWithQuestions[0].set.reverse();
         setQuestions(setsWithQuestions[0].set);
       }
     });
@@ -403,7 +404,7 @@ export default function AdminPanelAddQuestion() {
               }
             }
           });
-          console.log(languageSets);
+          // console.log(languageSets);
 
           const languageDocRef = doc(db, "languages", languageID);
           console.log(languageSets);
@@ -439,7 +440,8 @@ export default function AdminPanelAddQuestion() {
       >
         {set}
       </Typography>
-      {showAddQuestionForm ? (
+      {
+        // showAddQuestionForm ? (
         <Stack alignItems={"center"} gap={2} mt={2}>
           <TextField
             label="Enter Question"
@@ -478,15 +480,16 @@ export default function AdminPanelAddQuestion() {
             Submit
           </Button>
         </Stack>
-      ) : (
-        <IconButtonWithLabel
-          label={"Add Question"}
-          onClickHandler={() => {
-            setShowAddQuestionForm((curr) => true);
-          }}
-          icon={<Add />}
-        />
-      )}
+        // ) : (
+        //   <IconButtonWithLabel
+        //     label={"Add Question"}
+        //     onClickHandler={() => {
+        //       setShowAddQuestionForm((curr) => true);
+        //     }}
+        //     icon={<Add />}
+        //   />
+        // )
+      }
       <Stack
         direction={"row"}
         gap
@@ -495,10 +498,11 @@ export default function AdminPanelAddQuestion() {
         mt={3}
       >
         {questions && questions.length > 0 ? (
-          questions.map((question) => {
+          questions.map((question, index) => {
             return (
               <QuestionCard
-                key={question.flashCardQuestion}
+                key={index}
+                questionNumber={questions.length - index}
                 question={question}
                 language={language}
                 set={set}
@@ -506,7 +510,15 @@ export default function AdminPanelAddQuestion() {
             );
           })
         ) : (
-          <></>
+          <Typography
+            sx={{
+              fontFamily: "Staatliches",
+              color: "text.secondary",
+              fontSize: "1.5rem",
+            }}
+          >
+            No questions
+          </Typography>
         )}
       </Stack>
     </>
