@@ -22,16 +22,26 @@ export default function FlashCardQuiz() {
         return doc.data().flashCardSets;
       })[0];
 
-      console.log(flashCardSets);
       const flashCardSet = flashCardSets.filter(
         (set) => set.name == flashCardSetName
       )[0].set;
+      //populating the array of flashcards
+      const startingSetLenght = flashCardSet.length;
+      for (let i = 0; i < 100 - startingSetLenght; i++) {
+        flashCardSet.push(flashCardSet[i]);
+      }
 
-      setCurrentFlashCardSet((curr) => flashCardSet);
+      //randomizing flashcard array
+      
+      const randomizedFlashCardSet = flashCardSet
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+        
+      setCurrentFlashCardSet((curr) => randomizedFlashCardSet);
     });
   }, []);
 
-  console.log(specialCharacters);
   return currentFlashCardSet.length > 0 ? (
     <FlashCard
       flashCardAnswer={currentFlashCardSet[currentQuestion].flashCardAnswer}

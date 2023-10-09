@@ -22,11 +22,10 @@ export default function FlashCard({
   const [showAnswer, setShowAnswer] = useState(false);
   const answerRef = useRef();
   const navigator = useNavigate();
-  console.log(specialCharacters);
   function onShowAnswerClickedHandler() {
     setShowAnswer((curr) => !curr);
   }
-  console.log(numberOfQuestions, currentQuestionNumber);
+  // console.log(numberOfQuestions, currentQuestionNumber);
   return (
     <Stack height="100vh">
       <Stack
