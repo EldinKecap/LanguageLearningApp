@@ -47,13 +47,23 @@ export default function FlashCard({
           sx={{ width: "fit-content", m: "auto" }}
         >
           <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "Staatliches",
+              color: "text.secondary",
+              fontSize:"2rem"
+            }}
+          >
+            {currentQuestionNumber + 1 + "/" + numberOfQuestions}
+          </Typography>
+          <Typography
             variant="h2"
             sx={{
               fontFamily: "Staatliches",
               color: "text.primary",
             }}
           >
-            {currentQuestionNumber + 1 + ". " + flashCardQuestion}
+            {flashCardQuestion}
           </Typography>
           {showAnswer && (
             <Typography
