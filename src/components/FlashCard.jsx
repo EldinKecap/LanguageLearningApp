@@ -9,6 +9,7 @@ import {
 import React, { useRef, useState } from "react";
 import Logo from "./Logo";
 import { useNavigate } from "react-router-dom";
+import WrongAnswerHighlighted from "./WrongAnswerHighlighted";
 
 export default function FlashCard({
   flashCardQuestion,
@@ -20,6 +21,7 @@ export default function FlashCard({
   specialCharacters,
 }) {
   const [showAnswer, setShowAnswer] = useState(false);
+  const [keyPressed, setKeyPressed] = useState(true);
   const answerRef = useRef();
   const navigator = useNavigate();
   function onShowAnswerClickedHandler() {
@@ -50,7 +52,7 @@ export default function FlashCard({
             sx={{
               fontFamily: "Staatliches",
               color: "text.secondary",
-              fontSize:"2rem"
+              fontSize: "2rem",
             }}
           >
             {currentQuestionNumber + 1 + "/" + numberOfQuestions}
@@ -65,15 +67,12 @@ export default function FlashCard({
             {flashCardQuestion}
           </Typography>
           {showAnswer && (
-            <Typography
-              variant="body2"
-              sx={{
-                fontFamily: "Staatliches",
-                color: "text.secondary",
-              }}
-            >
-              {flashCardAnswer}
-            </Typography>
+            <Stack direction={"row"}>
+              <WrongAnswerHighlighted
+                answer={flashCardAnswer}
+                userInput={answerRef.current.value}
+              />
+            </Stack>
           )}
           <Stack direction={"row"} justifyContent={"end"} width={"100%"}>
             {specialCharacters ? (
@@ -104,6 +103,9 @@ export default function FlashCard({
             sx={{
               width: "80vw",
               minWidth: "250px",
+            }}
+            onKeyUp={() => {
+              setKeyPressed((curr) => !curr);
             }}
           />
           <Stack
