@@ -39,7 +39,6 @@ function LanguageListItem({ title, path }) {
           >
             {title}
           </Typography>
-
           <Button
             variant="contained"
             className="gradientButton buttonHover"
