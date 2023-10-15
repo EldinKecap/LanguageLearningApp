@@ -22,7 +22,6 @@ export default function NavBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigator = useNavigate();
 
-
   const listItemButton = {
     fontFamily: "Staatliches",
     fontSize: "1.5em",
@@ -59,8 +58,11 @@ export default function NavBar() {
               className="gradientButton buttonHover"
               variant="contained"
               color="success"
+              onClick={() => {
+                navigator("login");
+              }}
             >
-              Register
+              Login
             </Button>
             <IconButton
               onClick={() => {
@@ -157,7 +159,9 @@ export default function NavBar() {
             className="gradientButton buttonHover"
             variant="contained"
             color="success"
-            onClick={()=>{navigator('login')}}
+            onClick={() => {
+              navigator("login");
+            }}
           >
             Login
           </Button>
