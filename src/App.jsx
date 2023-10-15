@@ -12,6 +12,7 @@ import AdminPanel from "./pages/AdminPanel";
 import AdminPanelAddSet from "./pages/AdminPanelAddSet";
 import AdminPanelAddQuestion from "./pages/AdminPanelAddQuestion";
 import AdminPanelAddSpecialChars from "./pages/AdminPanelAddSpecialChars";
+import Login from "./pages/Login";
 
 let theme = createTheme({
   palette: {
@@ -26,6 +27,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/languagelist" element={<LanguageList />} />
             <Route
               path="/languagelist/:language"
