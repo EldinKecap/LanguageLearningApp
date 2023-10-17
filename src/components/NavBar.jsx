@@ -16,11 +16,26 @@ import {
 import Logo from "./Logo";
 import { Close, Menu } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
 
 export default function NavBar() {
   const mobile = useMediaQuery("(max-width:800px)");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigator = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [showLoginButton, setShowLoginButton] = useState(true);
+  const auth = getAuth();
+  if (user && showLoginButton) {
+    setShowLoginButton(false);
+  }
+
+  function onSignOutClicked() {
+    signOut(auth).then((data) => {
+      console.log(data);
+      setShowLoginButton(true);
+      localStorage.clear();
+    });
+  }
 
   const listItemButton = {
     fontFamily: "Staatliches",
@@ -49,21 +64,39 @@ export default function NavBar() {
         >
           <Logo />
           <Stack direction={"row"}>
-            <Button
-              sx={{
-                fontFamily: "Staatliches",
-                fontSize: "0.9rem",
-                mr: 2,
-              }}
-              className="gradientButton buttonHover"
-              variant="contained"
-              color="success"
-              onClick={() => {
-                navigator("login");
-              }}
-            >
-              Login
-            </Button>
+            {showLoginButton ? (
+              <Button
+                sx={{
+                  fontFamily: "Staatliches",
+                  fontSize: "0.9rem",
+                  mr: 2,
+                }}
+                className="gradientButton buttonHover"
+                variant="contained"
+                color="success"
+                onClick={() => {
+                  navigator("login");
+                }}
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                sx={{
+                  fontFamily: "Staatliches",
+                  fontSize: "0.9rem",
+                  mr: 2,
+                }}
+                className="gradientButton buttonHover"
+                variant="contained"
+                color="success"
+                onClick={() => {
+                  onSignOutClicked();
+                }}
+              >
+                Logout
+              </Button>
+            )}
             <IconButton
               onClick={() => {
                 setDrawerOpen(true);
@@ -151,20 +184,37 @@ export default function NavBar() {
               </ListItem>
             </Stack>
           </List>
-          <Button
-            sx={{
-              fontFamily: "Staatliches",
-              fontSize: "1rem",
-            }}
-            className="gradientButton buttonHover"
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigator("login");
-            }}
-          >
-            Login
-          </Button>
+          {showLoginButton ? (
+            <Button
+              sx={{
+                fontFamily: "Staatliches",
+                fontSize: "1rem",
+              }}
+              className="gradientButton buttonHover"
+              variant="contained"
+              color="success"
+              onClick={() => {
+                navigator("login");
+              }}
+            >
+              Login
+            </Button>
+          ) : (
+            <Button
+              sx={{
+                fontFamily: "Staatliches",
+                fontSize: "1rem",
+              }}
+              className="gradientButton buttonHover"
+              variant="contained"
+              color="success"
+              onClick={() => {
+                onSignOutClicked();
+              }}
+            >
+              Logout
+            </Button>
+          )}
         </Stack>
       </Stack>
     </AppBar>

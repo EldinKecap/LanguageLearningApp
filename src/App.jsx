@@ -39,8 +39,14 @@ function App() {
             />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/admin/:language" element={<AdminPanelAddSet />} />
-            <Route path="/admin/:language/specialchars" element={<AdminPanelAddSpecialChars />} />
-            <Route path="/admin/:language/:set" element={<AdminPanelAddQuestion />} />
+            <Route
+              path="/admin/:language/specialchars"
+              element={<AdminPanelAddSpecialChars />}
+            />
+            <Route
+              path="/admin/:language/:set"
+              element={<AdminPanelAddQuestion />}
+            />
             <Route path="*" element={<Error />} />
           </Routes>
         </Layout>

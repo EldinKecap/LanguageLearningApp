@@ -10,14 +10,18 @@ import {
 } from "@mui/material";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigator = useNavigate();
+
   function onGoogleSignInClicked() {
     const provider = new GoogleAuthProvider();
-
     const auth = getAuth();
     auth.useDeviceLanguage();
-
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
     signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -27,6 +31,17 @@ export default function Login() {
         const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
         console.log(user);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            accessToken: user.accessToken,
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL,
+            uid: user.uid,
+          })
+        );
+        navigator("/");
         // ...
       })
       .catch((error) => {
