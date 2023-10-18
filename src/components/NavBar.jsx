@@ -16,7 +16,7 @@ import {
 import Logo from "./Logo";
 import { Close, Menu } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function NavBar() {
   const mobile = useMediaQuery("(max-width:800px)");
@@ -25,6 +25,9 @@ export default function NavBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showLoginButton, setShowLoginButton] = useState(true);
   const auth = getAuth();
+  auth.onAuthStateChanged((user) => {
+    console.log(auth.currentUser);
+  });
   if (user && showLoginButton) {
     setShowLoginButton(false);
   }

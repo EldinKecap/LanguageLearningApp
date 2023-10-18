@@ -8,7 +8,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +27,10 @@ export default function Login() {
     const auth = getAuth();
     auth.useDeviceLanguage();
     provider.setCustomParameters({
-      prompt: 'select_account'
+      prompt: "select_account",
+    });
+    setPersistence(auth, browserLocalPersistence).then((data) => {
+      console.log(data);
     });
     signInWithPopup(auth, provider)
       .then((result) => {

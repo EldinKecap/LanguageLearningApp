@@ -13,6 +13,8 @@ import AdminPanelAddSet from "./pages/AdminPanelAddSet";
 import AdminPanelAddQuestion from "./pages/AdminPanelAddQuestion";
 import AdminPanelAddSpecialChars from "./pages/AdminPanelAddSpecialChars";
 import Login from "./pages/Login";
+import { useState } from "react";
+import { GoogleAuthProvider } from "firebase/auth";
 
 let theme = createTheme({
   palette: {
@@ -21,6 +23,13 @@ let theme = createTheme({
 });
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+  console.log(user);
+  if (isAdmin == false && user) {
+    setIsAdmin(true);
+  }
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -37,16 +46,22 @@ function App() {
               path="/languagelist/:language/:flashCardSetName"
               element={<FlashCardQuiz />}
             />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/admin/:language" element={<AdminPanelAddSet />} />
-            <Route
-              path="/admin/:language/specialchars"
-              element={<AdminPanelAddSpecialChars />}
-            />
-            <Route
-              path="/admin/:language/:set"
-              element={<AdminPanelAddQuestion />}
-            />
+            {isAdmin ? (
+              <>
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/admin/:language" element={<AdminPanelAddSet />} />
+                <Route
+                  path="/admin/:language/specialchars"
+                  element={<AdminPanelAddSpecialChars />}
+                />
+                <Route
+                  path="/admin/:language/:set"
+                  element={<AdminPanelAddQuestion />}
+                />
+              </>
+            ) : (
+              <></>
+            )}
             <Route path="*" element={<Error />} />
           </Routes>
         </Layout>
