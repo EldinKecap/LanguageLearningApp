@@ -6,7 +6,7 @@ export default function Logo() {
   const navigator = useNavigate()
 
   return (
-    <div className="firstWordOfLogo" onClick={()=>{ navigator('');}}>
+    <div className="firstWordOfLogo" onClick={()=>{ navigator('/');}}>
       Lang<strong className="gradientLetters secondWordOfLogo">Learn</strong>
     </div>
   );

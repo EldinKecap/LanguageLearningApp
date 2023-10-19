@@ -25,9 +25,9 @@ export default function NavBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [showLoginButton, setShowLoginButton] = useState(true);
   const auth = getAuth();
-  auth.onAuthStateChanged((user) => {
-    console.log(auth.currentUser);
-  });
+  // auth.onAuthStateChanged((user) => {
+  //   console.log(auth.currentUser);
+  // });
   if (user && showLoginButton) {
     setShowLoginButton(false);
   }

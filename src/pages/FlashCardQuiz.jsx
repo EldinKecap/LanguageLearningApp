@@ -4,6 +4,7 @@ import FlashCard from "../components/FlashCard";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import db from "../firebase/firebase";
 import { CircularProgress, Stack } from "@mui/material";
+import { getAuth } from "firebase/auth";
 
 export default function FlashCardQuiz() {
   const { language, flashCardSetName } = useParams();
@@ -12,6 +13,9 @@ export default function FlashCardQuiz() {
   const [completion, setCompletion] = useState(0);
   const [specialCharacters, setSpecialCharacters] = useState([]);
   useEffect(() => {
+    // i get auth here to stop the error that happens when reloading the quiz and auth needs to be confirmed before request is sent to firebase
+    getAuth();
+    /////////////////////////
     const languagesRef = collection(db, "languages");
     const languageQuery = query(languagesRef, where("name", "==", language));
 
@@ -32,12 +36,12 @@ export default function FlashCardQuiz() {
       }
 
       //randomizing flashcard array
-      
+
       const randomizedFlashCardSet = flashCardSet
         .map((value) => ({ value, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
         .map(({ value }) => value);
-        
+
       setCurrentFlashCardSet((curr) => randomizedFlashCardSet);
     });
   }, []);
