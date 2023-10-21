@@ -16,8 +16,10 @@ import {
   browserLocalPersistence,
   browserSessionPersistence,
 } from "firebase/auth";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import db from "../firebase/firebase";
 
 export default function Login() {
   const navigator = useNavigate();
@@ -25,13 +27,14 @@ export default function Login() {
   function onGoogleSignInClicked() {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
+
     auth.useDeviceLanguage();
     provider.setCustomParameters({
       prompt: "select_account",
     });
-    setPersistence(auth, browserLocalPersistence).then((data) => {
-      console.log(data);
-    });
+
+    setPersistence(auth, browserLocalPersistence)
+
     signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -40,7 +43,7 @@ export default function Login() {
         // The signed-in user info.
         const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
-        console.log(user);
+        // console.log(user);
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -51,18 +54,26 @@ export default function Login() {
             uid: user.uid,
           })
         );
+
+        const docRef = doc(db, "users", user.uid);
+        getDoc(docRef)
+          .then((docSnap) => {
+            if (!docSnap.exists()) {
+              setDoc(doc(db, "users", user.uid), {});
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
         navigator("/");
-        // ...
+
       })
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
+        console.log(errorMessage);
       });
   }
   return (

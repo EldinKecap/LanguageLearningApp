@@ -26,7 +26,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   
-  console.log(user);
+  // console.log(user);
   if (isAdmin == false && user) {
     setIsAdmin(true);
   }

@@ -12,6 +12,7 @@ export default function FlashCardQuiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [completion, setCompletion] = useState(0);
   const [specialCharacters, setSpecialCharacters] = useState([]);
+  
   useEffect(() => {
     // i get auth here to stop the error that happens when reloading the quiz and auth needs to be confirmed before request is sent to firebase
     getAuth();
