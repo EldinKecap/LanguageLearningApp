@@ -12,13 +12,38 @@ import {
 import { useNavigate } from "react-router-dom";
 import Title from "../components/Title";
 import db from "../firebase/firebase";
-import { collection, getDocs, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 function LanguageListItem({ title, path }) {
   const mobile = useMediaQuery("(max-width:800px)");
   const navigator = useNavigate();
   function onButtonClickHandler() {
-    navigator(path);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userDocRef = doc(db, "users", user.uid);
+
+    getDoc(userDocRef).then((docSnap) => {
+      const userProgressData = docSnap.data();
+      console.log(userProgressData);
+      if (Object.keys(userProgressData).includes(title)) {
+        navigator(path);
+      } else {
+        setDoc(
+          userDocRef,
+          {
+            language: { name: title },
+          },
+          { merge: true }
+        );
+        navigator(path);
+      }
+    });
   }
 
   return (
@@ -98,7 +123,11 @@ export default function LanguageList() {
             </Stack>
           )
         ) : (
-          <Typography variant="h2" fontFamily={"Staatliches"} color={"text.secondary"}>
+          <Typography
+            variant="h2"
+            fontFamily={"Staatliches"}
+            color={"text.secondary"}
+          >
             User not logged in
           </Typography>
         )}
