@@ -12,14 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Title from "../components/Title";
 import db from "../firebase/firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 
 function LanguageListItem({ title, path }) {
   const mobile = useMediaQuery("(max-width:800px)");
@@ -37,7 +30,7 @@ function LanguageListItem({ title, path }) {
         setDoc(
           userDocRef,
           {
-            language: { name: title },
+            [title]: {},
           },
           { merge: true }
         );

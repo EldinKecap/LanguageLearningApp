@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../components/Title";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import db from "../firebase/firebase";
 import {
   Box,
@@ -14,14 +22,112 @@ import {
   Typography,
 } from "@mui/material";
 
-export default function FlashCardSetList() {
-  const { language } = useParams();
-  const [flashCardNames, setFlashCardNames] = useState([]);
-  const [showLoading, setShowLoading] = useState(false);
+function FlashCardSetListItem({ setName }) {
   const navigator = useNavigate();
-  //When profiles are implemented retrive data here
+  const { language } = useParams();
   const [numberOfCompletedQuestions, setNumberOfCompletedQuestions] =
     useState(0);
+
+  function onButtonClickHandler(relPath) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userDocRef = doc(db, "users", user.uid);
+
+    getDoc(userDocRef).then((docSnap) => {
+      const userProgressData = docSnap.data();
+      console.log(userProgressData);
+      const userProgressLanguage = userProgressData[language];
+      if (Object.keys(userProgressLanguage).includes(setName)) {
+        navigator(relPath);
+      } else {
+        setDoc(
+          userDocRef,
+          {
+            [language]: { [setName]: {} },
+          },
+          { merge: true }
+        );
+        navigator(relPath);
+      }
+    });
+  }
+
+  return (
+    <Card
+      key={setName}
+      sx={{
+        minWidth: "250px",
+        maxWidth: "350px",
+        maxHeight: "400px",
+      }}
+    >
+      <CardContent>
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          <Typography
+            variant="h3"
+            sx={{
+              fontFamily: "Staatliches",
+              wordWrap: "break-word",
+            }}
+          >
+            {setName}
+          </Typography>
+
+          <Box sx={{ position: "relative", display: "inline-flex" }}>
+            <CircularProgress
+              color="success"
+              variant="determinate"
+              size={50}
+              value={numberOfCompletedQuestions}
+            />
+            <Box
+              sx={{
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+                position: "absolute",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                variant="caption"
+                component="div"
+                color="text.secondary"
+                fontFamily={"Staatliches"}
+              >
+                {numberOfCompletedQuestions + `/100`}
+              </Typography>
+            </Box>
+          </Box>
+        </Stack>
+
+        <Typography
+          variant="body2"
+          sx={{ fontFamily: "Staatliches", color: "text.secondary" }}
+        >
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sunt, quam!
+        </Typography>
+        <CardActions sx={{ justifyContent: "end", mt: "auto" }}>
+          <Button
+            variant="contained"
+            className="gradientButton buttonHover"
+            onClick={() => onButtonClickHandler(setName)}
+            sx={{ fontFamily: "Staatliches" }}
+          >
+            Start
+          </Button>
+        </CardActions>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function FlashCardSetList() {
+  const { language } = useParams();
+  const [flashCardSetNames, setFlashCardSetNames] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     setShowLoading(true);
@@ -34,18 +140,14 @@ export default function FlashCardSetList() {
         (doc) => doc.data().flashCardSets
       )[0];
       if (flashCardSets) {
-        const flashCardNameArray = flashCardSets.map(
+        const flashCardSetNamesArray = flashCardSets.map(
           (flashCardSet) => flashCardSet.name
         );
-        setFlashCardNames(flashCardNameArray);
+        setFlashCardSetNames(flashCardSetNamesArray);
       }
       setShowLoading(false);
     });
   }, []);
-
-  function onButtonClickHandler(relPath) {
-    navigator(relPath);
-  }
 
   return (
     <>
@@ -66,80 +168,9 @@ export default function FlashCardSetList() {
       >
         {showLoading ? (
           <CircularProgress color="success" disableShrink />
-        ) : flashCardNames.length > 0 ? (
-          flashCardNames.map((cardName) => {
-            return (
-              <Card
-                key={cardName}
-                sx={{
-                  minWidth: "250px",
-                  maxWidth: "350px",
-                  maxHeight: "400px",
-                }}
-              >
-                <CardContent>
-                  <Stack direction={"row"} justifyContent={"space-between"}>
-                    <Typography
-                      variant="h3"
-                      sx={{
-                        fontFamily: "Staatliches",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      {cardName}
-                    </Typography>
-
-                    <Box sx={{ position: "relative", display: "inline-flex" }}>
-                      <CircularProgress
-                        color="success"
-                        variant="determinate"
-                        size={50}
-                        value={numberOfCompletedQuestions}
-                      />
-                      <Box
-                        sx={{
-                          top: 0,
-                          left: 0,
-                          bottom: 0,
-                          right: 0,
-                          position: "absolute",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="caption"
-                          component="div"
-                          color="text.secondary"
-                          fontFamily={"Staatliches"}
-                        >
-                          {numberOfCompletedQuestions + `/100`}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Stack>
-
-                  <Typography
-                    variant="body2"
-                    sx={{ fontFamily: "Staatliches", color: "text.secondary" }}
-                  >
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Sunt, quam!
-                  </Typography>
-                  <CardActions sx={{ justifyContent: "end", mt: "auto" }}>
-                    <Button
-                      variant="contained"
-                      className="gradientButton buttonHover"
-                      onClick={() => onButtonClickHandler(cardName)}
-                      sx={{ fontFamily: "Staatliches" }}
-                    >
-                      Start
-                    </Button>
-                  </CardActions>
-                </CardContent>
-              </Card>
-            );
+        ) : flashCardSetNames.length > 0 ? (
+          flashCardSetNames.map((setName) => {
+            return <FlashCardSetListItem key={setName} setName={setName} />;
           })
         ) : (
           <Typography
