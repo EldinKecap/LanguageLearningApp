@@ -28,6 +28,25 @@ function FlashCardSetListItem({ setName }) {
   const [numberOfCompletedQuestions, setNumberOfCompletedQuestions] =
     useState(0);
 
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userDocRef = doc(db, "users", user.uid);
+
+    getDoc(userDocRef).then((docSnap) => {
+      const userProgressData = docSnap.data();
+      const numOfCompletedQuestionsFromDb =
+        userProgressData[language][setName] &&
+        userProgressData[language][setName].currentQuestion;
+      console.log(numOfCompletedQuestionsFromDb);
+      if (numOfCompletedQuestionsFromDb) {
+        setNumberOfCompletedQuestions((curr) => numOfCompletedQuestionsFromDb);
+        user["currentQuestion"] = numOfCompletedQuestionsFromDb;
+        console.log(user);
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+    });
+  }, []);
+
   function onButtonClickHandler(relPath) {
     const user = JSON.parse(localStorage.getItem("user"));
     const userDocRef = doc(db, "users", user.uid);
@@ -145,6 +164,7 @@ export default function FlashCardSetList() {
         );
         setFlashCardSetNames(flashCardSetNamesArray);
       }
+
       setShowLoading(false);
     });
   }, []);

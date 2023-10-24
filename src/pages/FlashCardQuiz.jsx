@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FlashCard from "../components/FlashCard";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import db from "../firebase/firebase";
 import { CircularProgress, Stack, Typography } from "@mui/material";
 import { getAuth } from "firebase/auth";
@@ -48,6 +56,11 @@ export default function FlashCardQuiz() {
           .map(({ value }) => value);
 
         setCurrentFlashCardSet((curr) => randomizedFlashCardSet);
+        const user = JSON.parse(localStorage.getItem("user"));
+        console.log(user);
+        if (user.currentQuestion && user.currentQuestion > currentQuestion) {
+          setCurrentQuestion((curr) => user.currentQuestion - 1);
+        }
       } else {
         setNoQuestionsError(true);
         return;
@@ -63,6 +76,19 @@ export default function FlashCardQuiz() {
       nextQuestion={() => {
         setCurrentQuestion((curr) =>
           curr != currentFlashCardSet.length - 1 ? curr + 1 : curr
+        );
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userDocRef = doc(db, "users", user.uid);
+
+        setDoc(
+          userDocRef,
+          {
+            [language]: {
+              //I have to increase currentQuestion here because i used it as an index for the set array
+              [flashCardSetName]: { currentQuestion: currentQuestion + 2 },
+            },
+          },
+          { merge: false }
         );
 
         setCompletion(
