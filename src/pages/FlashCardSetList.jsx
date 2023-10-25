@@ -34,14 +34,30 @@ function FlashCardSetListItem({ setName }) {
 
     getDoc(userDocRef).then((docSnap) => {
       const userProgressData = docSnap.data();
-      const numOfCompletedQuestionsFromDb =
+      let numOfCompletedQuestionsFromDb =
         userProgressData[language][setName] &&
         userProgressData[language][setName].currentQuestion;
-      console.log(numOfCompletedQuestionsFromDb);
+      // console.log(numOfCompletedQuestionsFromDb,setName);
       if (numOfCompletedQuestionsFromDb) {
+        if (
+          numOfCompletedQuestionsFromDb != user["currentQuestion"] &&
+          user["currentQuestion"] != undefined
+        ) {
+          setDoc(
+            userDocRef,
+            {
+              [language]: {
+                //I have to increase currentQuestion here because i used it as an index for the set array
+                [setName]: { currentQuestion: user["currentQuestion"] },
+              },
+            },
+            { merge: true }
+          );
+
+          numOfCompletedQuestionsFromDb = user["currentQuestion"];
+        }
         setNumberOfCompletedQuestions((curr) => numOfCompletedQuestionsFromDb);
         user["currentQuestion"] = numOfCompletedQuestionsFromDb;
-        console.log(user);
         localStorage.setItem("user", JSON.stringify(user));
       }
     });

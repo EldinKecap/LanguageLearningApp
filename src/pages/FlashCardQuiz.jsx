@@ -78,18 +78,20 @@ export default function FlashCardQuiz() {
           curr != currentFlashCardSet.length - 1 ? curr + 1 : curr
         );
         const user = JSON.parse(localStorage.getItem("user"));
-        const userDocRef = doc(db, "users", user.uid);
+        user.currentQuestion = currentQuestion + 2;
+        localStorage.setItem("user", JSON.stringify(user));
+        // const userDocRef = doc(db, "users", user.uid);
 
-        setDoc(
-          userDocRef,
-          {
-            [language]: {
-              //I have to increase currentQuestion here because i used it as an index for the set array
-              [flashCardSetName]: { currentQuestion: currentQuestion + 2 },
-            },
-          },
-          { merge: false }
-        );
+        // setDoc(
+        //   userDocRef,
+        //   {
+        //     [language]: {
+        //       //I have to increase currentQuestion here because i used it as an index for the set array
+        //       [flashCardSetName]: { currentQuestion: currentQuestion + 2 },
+        //     },
+        //   },
+        //   { merge: false }
+        // );
 
         setCompletion(
           ((currentQuestion + 1) / currentFlashCardSet.length) * 100
