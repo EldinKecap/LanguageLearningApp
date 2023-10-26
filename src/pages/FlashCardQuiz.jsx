@@ -57,10 +57,19 @@ export default function FlashCardQuiz() {
 
         setCurrentFlashCardSet((curr) => randomizedFlashCardSet);
         const user = JSON.parse(localStorage.getItem("user"));
-        console.log(user);
-        if (user.currentQuestion && user.currentQuestion > currentQuestion) {
-          setCurrentQuestion((curr) => user.currentQuestion - 1);
+        if (user[language][flashCardSetName].currentQuestion > 100) {
+          user[language][flashCardSetName].currentQuestion = 0;
+          localStorage.setItem("user", JSON.stringify(user));
         }
+        if (
+          user[language][flashCardSetName].currentQuestion &&
+          user[language][flashCardSetName].currentQuestion > currentQuestion
+        ) {
+          setCurrentQuestion(
+            (curr) => user[language][flashCardSetName].currentQuestion - 1
+          );
+        }
+        // console.log(user);
       } else {
         setNoQuestionsError(true);
         return;
@@ -78,7 +87,13 @@ export default function FlashCardQuiz() {
           curr != currentFlashCardSet.length - 1 ? curr + 1 : curr
         );
         const user = JSON.parse(localStorage.getItem("user"));
-        user.currentQuestion = currentQuestion + 2;
+        console.log(currentQuestion, "currQuestion");
+
+        user[language][flashCardSetName].currentQuestion = currentQuestion + 2;
+        if (user[language][flashCardSetName].currentQuestion > 100) {
+          user[language][flashCardSetName].currentQuestion = 100;
+        }
+        console.log(user);
         localStorage.setItem("user", JSON.stringify(user));
         // const userDocRef = doc(db, "users", user.uid);
 

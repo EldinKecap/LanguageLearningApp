@@ -17,9 +17,12 @@ import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 function LanguageListItem({ title, path }) {
   const mobile = useMediaQuery("(max-width:800px)");
   const navigator = useNavigate();
+
   function onButtonClickHandler() {
     const user = JSON.parse(localStorage.getItem("user"));
     const userDocRef = doc(db, "users", user.uid);
+    user[title] = {};
+    localStorage.setItem("user", JSON.stringify(user));
 
     getDoc(userDocRef).then((docSnap) => {
       const userProgressData = docSnap.data();
