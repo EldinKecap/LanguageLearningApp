@@ -83,12 +83,10 @@ function FlashCardSetListItem({ setName }) {
             numOfCorrectQuestionsFromDb !=
             user[language][setName].correctQuestions
           ) {
-            console.log("yo");
             setDoc(
               userDocRef,
               {
                 [language]: {
-                  //I have to increase currentQuestion here because i used it as an index for the set array
                   [setName]: {
                     correctQuestions:
                       user[language][setName]["correctQuestions"],
@@ -98,6 +96,7 @@ function FlashCardSetListItem({ setName }) {
               { merge: true }
             );
           }
+          
           setNumberOfCompletedQuestions(
             (curr) => user[language][setName].correctQuestions
           );
@@ -121,7 +120,6 @@ function FlashCardSetListItem({ setName }) {
             userDocRef,
             {
               [language]: {
-                //I have to increase currentQuestion here because i used it as an index for the set array
                 [setName]: {
                   correctQuestions: user[language][setName]["correctQuestions"],
                 },
@@ -130,6 +128,22 @@ function FlashCardSetListItem({ setName }) {
             { merge: true }
           );
         }
+      }
+
+      if (numOfCurrentQuestionFromDb == 0) {
+        setDoc(
+          userDocRef,
+          {
+            [language]: {
+              [setName]: {
+                bestScore: user[language][setName]["correctQuestions"],
+              },
+            },
+          },
+          { merge: true }
+        );
+        user[language][setName]["correctQuestions"] = 0;
+        localStorage.setItem("user", JSON.stringify(user));
       }
     });
   }, []);
