@@ -26,8 +26,8 @@ export default function FlashCard({
   const navigator = useNavigate();
   const { language, flashCardSetName } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
-  if (!user[language][flashCardSetName].correctQuestion) {
-    user[language][flashCardSetName].correctQuestion = 0;
+  if (!user[language][flashCardSetName].correctQuestions) {
+    user[language][flashCardSetName].correctQuestions = 0;
     localStorage.setItem("user", JSON.stringify(user));
   }
 
@@ -145,7 +145,8 @@ export default function FlashCard({
                   nextQuestion();
                   setShowAnswer((curr) => false);
                   answerRef.current.value = "";
-                  user[language][flashCardSetName].correctQuestion++;
+                  user[language][flashCardSetName].correctQuestions++;
+                  localStorage.setItem("user", JSON.stringify(user));
                 } else {
                   setShowAnswer((curr) => true);
                 }
@@ -179,7 +180,7 @@ export default function FlashCard({
               textAlign: "center",
             }}
           >
-            {user[language][flashCardSetName].correctQuestion +
+            {user[language][flashCardSetName].correctQuestions +
               "/" +
               numberOfQuestions}
           </Typography>

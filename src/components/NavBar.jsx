@@ -37,6 +37,7 @@ export default function NavBar() {
       console.log(data);
       setShowLoginButton(true);
       localStorage.clear();
+      navigator("/");
     });
   }
 

@@ -32,20 +32,20 @@ function FlashCardSetListItem({ setName }) {
     const user = JSON.parse(localStorage.getItem("user"));
     const userDocRef = doc(db, "users", user.uid);
     if (!user[language][setName]) {
-      user[language][setName]= {};
+      user[language][setName] = {};
     }
-     console.log(user);
+    console.log(user);
     localStorage.setItem("user", JSON.stringify(user));
-    
+
     getDoc(userDocRef).then((docSnap) => {
       const userProgressData = docSnap.data();
-      let numOfCompletedQuestionsFromDb =
+      let numOfCurrentQuestionFromDb =
         userProgressData[language][setName] &&
         userProgressData[language][setName].currentQuestion;
-      // console.log(numOfCompletedQuestionsFromDb,setName);
-      if (typeof(numOfCompletedQuestionsFromDb) == 'number') {
+      // console.log(numOfCurrentQuestionFromDb,setName);
+      if (typeof numOfCurrentQuestionFromDb == "number") {
         if (
-          numOfCompletedQuestionsFromDb !=
+          numOfCurrentQuestionFromDb !=
             user[language][setName]["currentQuestion"] &&
           user[language][setName]["currentQuestion"] != undefined
         ) {
@@ -62,17 +62,74 @@ function FlashCardSetListItem({ setName }) {
             { merge: true }
           );
 
-          numOfCompletedQuestionsFromDb =
+          numOfCurrentQuestionFromDb =
             user[language][setName]["currentQuestion"];
         }
         // console.log(
-        //   numOfCompletedQuestionsFromDb,
+        //   numOfCurrentQuestionFromDb,
         //   user[language][setName]["currentQuestion"]
         // );
-        setNumberOfCompletedQuestions((curr) => numOfCompletedQuestionsFromDb);
-        user[language][setName]["currentQuestion"] =
-          numOfCompletedQuestionsFromDb;
+        user[language][setName]["currentQuestion"] = numOfCurrentQuestionFromDb;
         localStorage.setItem("user", JSON.stringify(user));
+      }
+
+      let numOfCorrectQuestionsFromDb =
+        userProgressData[language][setName] &&
+        userProgressData[language][setName].correctQuestions;
+      console.log(numOfCorrectQuestionsFromDb);
+      if (typeof numOfCorrectQuestionsFromDb == "number") {
+        if (typeof user[language][setName].correctQuestions == "number") {
+          if (
+            numOfCorrectQuestionsFromDb !=
+            user[language][setName].correctQuestions
+          ) {
+            console.log("yo");
+            setDoc(
+              userDocRef,
+              {
+                [language]: {
+                  //I have to increase currentQuestion here because i used it as an index for the set array
+                  [setName]: {
+                    correctQuestions:
+                      user[language][setName]["correctQuestions"],
+                  },
+                },
+              },
+              { merge: true }
+            );
+          }
+          setNumberOfCompletedQuestions(
+            (curr) => user[language][setName].correctQuestions
+          );
+        }
+
+        // setDoc(
+        //   userDocRef,
+        //   {
+        //     [language]: {
+        //       //I have to increase currentQuestion here because i used it as an index for the set array
+        //       [setName]: {
+        //         correctQuestions: user[language][setName]["correctQuestions"],
+        //       },
+        //     },
+        //   },
+        //   { merge: true }
+        // );
+      } else {
+        if (typeof user[language][setName].correctQuestions == "number") {
+          setDoc(
+            userDocRef,
+            {
+              [language]: {
+                //I have to increase currentQuestion here because i used it as an index for the set array
+                [setName]: {
+                  correctQuestions: user[language][setName]["correctQuestions"],
+                },
+              },
+            },
+            { merge: true }
+          );
+        }
       }
     });
   }, []);
