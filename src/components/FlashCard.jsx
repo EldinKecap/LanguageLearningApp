@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useRef, useState } from "react";
 import Logo from "./Logo";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import WrongAnswerHighlighted from "./WrongAnswerHighlighted";
 
 export default function FlashCard({
@@ -24,6 +24,13 @@ export default function FlashCard({
   const [keyPressed, setKeyPressed] = useState(true);
   const answerRef = useRef();
   const navigator = useNavigate();
+  const { language, flashCardSetName } = useParams();
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user[language][flashCardSetName].correctQuestion) {
+    user[language][flashCardSetName].correctQuestion = 0;
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+
   function onShowAnswerClickedHandler() {
     setShowAnswer((curr) => !curr);
   }
@@ -138,6 +145,7 @@ export default function FlashCard({
                   nextQuestion();
                   setShowAnswer((curr) => false);
                   answerRef.current.value = "";
+                  user[language][flashCardSetName].correctQuestion++;
                 } else {
                   setShowAnswer((curr) => true);
                 }
@@ -162,6 +170,18 @@ export default function FlashCard({
             }}
           >
             You have completed this set
+          </Typography>
+          <Typography
+            variant="h2"
+            sx={{
+              fontFamily: "Staatliches",
+              color: "text.primary",
+              textAlign: "center",
+            }}
+          >
+            {user[language][flashCardSetName].correctQuestion +
+              "/" +
+              numberOfQuestions}
           </Typography>
           <Button
             variant="contained"

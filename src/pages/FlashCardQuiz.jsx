@@ -90,9 +90,12 @@ export default function FlashCardQuiz() {
         console.log(currentQuestion, "currQuestion");
 
         user[language][flashCardSetName].currentQuestion = currentQuestion + 2;
-        if (user[language][flashCardSetName].currentQuestion > 100) {
-          user[language][flashCardSetName].currentQuestion = 100;
+        if (user[language][flashCardSetName].currentQuestion >= 100) {
+          user[language][flashCardSetName].currentQuestion = 0;
         }
+
+        
+
         console.log(user);
         localStorage.setItem("user", JSON.stringify(user));
         // const userDocRef = doc(db, "users", user.uid);
