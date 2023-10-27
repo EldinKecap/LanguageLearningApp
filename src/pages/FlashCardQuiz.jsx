@@ -69,13 +69,20 @@ export default function FlashCardQuiz() {
             (curr) => user[language][flashCardSetName].currentQuestion - 1
           );
         }
-        // console.log(user);
       } else {
         setNoQuestionsError(true);
         return;
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (currentQuestion != 0) {
+      setCompletion(
+        (curr) => ((currentQuestion + 1) / currentFlashCardSet.length) * 100
+      );
+    }
+  }, [currentQuestion]);
 
   return currentFlashCardSet.length > 0 ? (
     <FlashCard
@@ -94,8 +101,6 @@ export default function FlashCardQuiz() {
           user[language][flashCardSetName].currentQuestion = 0;
         }
 
-        
-
         console.log(user);
         localStorage.setItem("user", JSON.stringify(user));
         // const userDocRef = doc(db, "users", user.uid);
@@ -112,7 +117,7 @@ export default function FlashCardQuiz() {
         // );
 
         setCompletion(
-          ((currentQuestion + 1) / currentFlashCardSet.length) * 100
+          (curr) => ((currentQuestion + 1) / currentFlashCardSet.length) * 100
         );
       }}
       numberOfQuestions={currentFlashCardSet.length}
