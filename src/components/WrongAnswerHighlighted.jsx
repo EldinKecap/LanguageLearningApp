@@ -8,7 +8,7 @@ export default function WrongAnswerHighlighted({ answer, userInput }) {
   return (
     <>
       {answerSplitInCharacters.map((char, index) => {
-        console.log(index, char,userInputSplitInCharacters[index]);
+        // console.log(index, char,userInputSplitInCharacters[index]);
         if (userInputSplitInCharacters[index] == char) {
           return (
             <Typography variant="body1" sx={{ color: "green" , fontWeight:600}}>

@@ -34,13 +34,15 @@ export default function FlashCardQuiz() {
       // i used index [0] at the end to get rid of an outer array of map
       const flashCardSets = languageSnapshot.docs.map((doc) => {
         setSpecialCharacters((curr) => doc.data().specialCharacters);
+        // console.log(doc.data().flashCardSets);
         return doc.data().flashCardSets;
       })[0];
 
       let flashCardSet = flashCardSets.filter(
         (set) => set.name == flashCardSetName
       )[0];
-      if (flashCardSet.set) {
+
+      if (flashCardSet.set && flashCardSet.set.length > 0) {
         flashCardSet = flashCardSet.set;
         //populating the array of flashcards
         const startingSetLenght = flashCardSet.length;
@@ -132,6 +134,7 @@ export default function FlashCardQuiz() {
           variant="h2"
           fontFamily={"Staatliches"}
           color={"text.secondary"}
+          align="center"
         >
           No Flash Cards retrieved
         </Typography>

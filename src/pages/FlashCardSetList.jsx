@@ -21,12 +21,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import ProgressWithLabel from "../components/ProgressWithLabel";
 
 function FlashCardSetListItem({ setName }) {
   const navigator = useNavigate();
   const { language } = useParams();
-  const [numberOfCompletedQuestions, setNumberOfCompletedQuestions] =
-    useState(0);
+  const [numberOfCurrentQuestion, setNumberOfCurrentQuestion] = useState(0);
+  const [numberOfCorrectQuestions, setNumberOfCorrectQuestions] = useState(0);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -34,11 +35,12 @@ function FlashCardSetListItem({ setName }) {
     if (!user[language][setName]) {
       user[language][setName] = {};
     }
-    console.log(user);
+    // console.log(user);
     localStorage.setItem("user", JSON.stringify(user));
 
     getDoc(userDocRef).then((docSnap) => {
       const userProgressData = docSnap.data();
+
       let numOfCurrentQuestionFromDb =
         userProgressData[language][setName] &&
         userProgressData[language][setName].currentQuestion;
@@ -70,13 +72,16 @@ function FlashCardSetListItem({ setName }) {
         //   user[language][setName]["currentQuestion"]
         // );
         user[language][setName]["currentQuestion"] = numOfCurrentQuestionFromDb;
+        setNumberOfCurrentQuestion(
+          (curr) => user[language][setName]["currentQuestion"]
+        );
         localStorage.setItem("user", JSON.stringify(user));
       }
 
       let numOfCorrectQuestionsFromDb =
         userProgressData[language][setName] &&
         userProgressData[language][setName].correctQuestions;
-      console.log(numOfCorrectQuestionsFromDb);
+      // console.log(numOfCorrectQuestionsFromDb);
       if (typeof numOfCorrectQuestionsFromDb == "number") {
         if (typeof user[language][setName].correctQuestions == "number") {
           if (
@@ -96,8 +101,8 @@ function FlashCardSetListItem({ setName }) {
               { merge: true }
             );
           }
-          
-          setNumberOfCompletedQuestions(
+
+          setNumberOfCorrectQuestions(
             (curr) => user[language][setName].correctQuestions
           );
         }
@@ -131,17 +136,17 @@ function FlashCardSetListItem({ setName }) {
       }
 
       if (numOfCurrentQuestionFromDb == 0) {
-        setDoc(
-          userDocRef,
-          {
-            [language]: {
-              [setName]: {
-                bestScore: user[language][setName]["correctQuestions"],
-              },
-            },
-          },
-          { merge: true }
-        );
+        // setDoc(
+        //   userDocRef,
+        //   {
+        //     [language]: {
+        //       [setName]: {
+        //         bestScore: user[language][setName]["correctQuestions"],
+        //       },
+        //     },
+        //   },
+        //   { merge: true }
+        // );
         user[language][setName]["correctQuestions"] = 0;
         localStorage.setItem("user", JSON.stringify(user));
       }
@@ -181,7 +186,11 @@ function FlashCardSetListItem({ setName }) {
       }}
     >
       <CardContent>
-        <Stack direction={"row"} justifyContent={"space-between"}>
+        <Stack
+          direction={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
           <Typography
             variant="h3"
             sx={{
@@ -191,41 +200,21 @@ function FlashCardSetListItem({ setName }) {
           >
             {setName}
           </Typography>
-
-          <Box sx={{ position: "relative", display: "inline-flex" }}>
-            <CircularProgress
-              color="success"
-              variant="determinate"
-              size={50}
-              value={numberOfCompletedQuestions}
-            />
-            <Box
-              sx={{
-                top: 0,
-                left: 0,
-                bottom: 0,
-                right: 0,
-                position: "absolute",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography
-                variant="caption"
-                component="div"
-                color="text.secondary"
-                fontFamily={"Staatliches"}
-              >
-                {numberOfCompletedQuestions + `/100`}
-              </Typography>
-            </Box>
-          </Box>
+          <ProgressWithLabel
+            progressValue={numberOfCorrectQuestions}
+            label={"correct"}
+            color={"success"}
+          />
+          <ProgressWithLabel
+            progressValue={numberOfCurrentQuestion}
+            label={"current"}
+            color={"info"}
+          />
         </Stack>
 
         <Typography
           variant="body2"
-          sx={{ fontFamily: "Staatliches", color: "text.secondary" }}
+          sx={{ fontFamily: "Staatliches", color: "text.secondary", mt: 3 }}
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sunt, quam!
         </Typography>

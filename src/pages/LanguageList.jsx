@@ -21,7 +21,9 @@ function LanguageListItem({ title, path }) {
   function onButtonClickHandler() {
     const user = JSON.parse(localStorage.getItem("user"));
     const userDocRef = doc(db, "users", user.uid);
-    user[title] = {};
+    if (!Object.keys(user).includes(title)) {
+      user[title] = {};
+    }
     localStorage.setItem("user", JSON.stringify(user));
 
     getDoc(userDocRef).then((docSnap) => {

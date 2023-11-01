@@ -33,7 +33,7 @@ export default function Login() {
       prompt: "select_account",
     });
 
-    setPersistence(auth, browserLocalPersistence)
+    setPersistence(auth, browserLocalPersistence);
 
     signInWithPopup(auth, provider)
       .then((result) => {
@@ -44,30 +44,35 @@ export default function Login() {
         const user = result.user;
         // IdP data available using getAdditionalUserInfo(result)
         // console.log(user);
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            accessToken: user.accessToken,
-            email: user.email,
-            name: user.displayName,
-            photoURL: user.photoURL,
-            uid: user.uid,
-          })
-        );
 
         const docRef = doc(db, "users", user.uid);
+
         getDoc(docRef)
           .then((docSnap) => {
+            let userProgressData = docSnap.data();
             if (!docSnap.exists()) {
               setDoc(doc(db, "users", user.uid), {});
+              userProgressData = {};
+            } else {
+              userProgressData = docSnap.data();
             }
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                accessToken: user.accessToken,
+                email: user.email,
+                name: user.displayName,
+                photoURL: user.photoURL,
+                uid: user.uid,
+                ...userProgressData,
+              })
+            );
           })
           .catch((err) => {
             console.log(err);
           });
 
         navigator("/");
-
       })
       .catch((error) => {
         // Handle Errors here.
