@@ -90,7 +90,7 @@ export default function LanguageList() {
       setShowLoading(false);
     });
   }, []);
-
+  
   return (
     <>
       <Title title="Language List" />

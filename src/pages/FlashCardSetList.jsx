@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../components/Title";
 import {
@@ -12,7 +12,6 @@ import {
 } from "firebase/firestore";
 import db from "../firebase/firebase";
 import {
-  Box,
   Button,
   Card,
   CardActions,
@@ -28,128 +27,118 @@ function FlashCardSetListItem({ setName }) {
   const { language } = useParams();
   const [numberOfCurrentQuestion, setNumberOfCurrentQuestion] = useState(0);
   const [numberOfCorrectQuestions, setNumberOfCorrectQuestions] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userDocRef = doc(db, "users", user.uid);
+    // SETTING LOCAL SET TRACKING VALUE
     if (!user[language][setName]) {
-      user[language][setName] = {};
+      user[language][setName] = {
+        currentQuestion: 0,
+        correctQuestions: 0,
+        bestScore: 0,
+        completed: false,
+      };
     }
-    // console.log(user);
+
     localStorage.setItem("user", JSON.stringify(user));
 
     getDoc(userDocRef).then((docSnap) => {
+      const user = JSON.parse(localStorage.getItem("user"));
       const userProgressData = docSnap.data();
+      // console.log(userProgressData);
 
-      let numOfCurrentQuestionFromDb =
-        userProgressData[language][setName] &&
-        userProgressData[language][setName].currentQuestion;
-      // console.log(numOfCurrentQuestionFromDb,setName);
-      if (typeof numOfCurrentQuestionFromDb == "number") {
-        if (
-          numOfCurrentQuestionFromDb !=
-            user[language][setName]["currentQuestion"] &&
-          user[language][setName]["currentQuestion"] != undefined
-        ) {
-          setDoc(
-            userDocRef,
-            {
-              [language]: {
-                //I have to increase currentQuestion here because i used it as an index for the set array
-                [setName]: {
-                  currentQuestion: user[language][setName]["currentQuestion"],
-                },
-              },
+      // CHECKING TO SEE IF PROGRESS DATA IS SAVED IN FB
+      // BY SEEING IF THE LANGUAGE HAS THAT PROPERTY
+
+      const progressDataSaved = Object.keys(
+        userProgressData[language]
+      ).includes(setName);
+
+      if (!progressDataSaved) {
+        setDoc(
+          userDocRef,
+          {
+            [language]: {
+              [setName]: user[language][setName],
             },
-            { merge: true }
-          );
-
-          numOfCurrentQuestionFromDb =
-            user[language][setName]["currentQuestion"];
-        }
-        // console.log(
-        //   numOfCurrentQuestionFromDb,
-        //   user[language][setName]["currentQuestion"]
-        // );
-        user[language][setName]["currentQuestion"] = numOfCurrentQuestionFromDb;
-        setNumberOfCurrentQuestion(
-          (curr) => user[language][setName]["currentQuestion"]
+          },
+          { merge: true }
         );
-        localStorage.setItem("user", JSON.stringify(user));
       }
 
-      let numOfCorrectQuestionsFromDb =
-        userProgressData[language][setName] &&
-        userProgressData[language][setName].correctQuestions;
-      // console.log(numOfCorrectQuestionsFromDb);
-      if (typeof numOfCorrectQuestionsFromDb == "number") {
-        if (typeof user[language][setName].correctQuestions == "number") {
-          if (
-            numOfCorrectQuestionsFromDb !=
-            user[language][setName].correctQuestions
-          ) {
-            setDoc(
-              userDocRef,
-              {
-                [language]: {
-                  [setName]: {
-                    correctQuestions:
-                      user[language][setName]["correctQuestions"],
-                  },
-                },
-              },
-              { merge: true }
-            );
-          }
+      //CHEKING IF THE DATA IS THE SAME IN THE LANGUAGE LOCALLY AND IN FB
 
-          setNumberOfCorrectQuestions(
-            (curr) => user[language][setName].correctQuestions
-          );
-        }
+      const languageProgressDataFromDb = userProgressData[language][setName];
+      const languageProgressDataLocal = user[language][setName];
 
-        // setDoc(
-        //   userDocRef,
-        //   {
-        //     [language]: {
-        //       //I have to increase currentQuestion here because i used it as an index for the set array
-        //       [setName]: {
-        //         correctQuestions: user[language][setName]["correctQuestions"],
-        //       },
-        //     },
-        //   },
-        //   { merge: true }
-        // );
+      // CHEKING THE CURRENT QUESTION TRACKING
+
+      if (
+        languageProgressDataLocal.currentQuestion >
+          languageProgressDataFromDb.currentQuestion &&
+        !languageProgressDataLocal.completed
+      ) {
+        userProgressData[language][setName].currentQuestion =
+          languageProgressDataLocal.currentQuestion;
       } else {
-        if (typeof user[language][setName].correctQuestions == "number") {
-          setDoc(
-            userDocRef,
-            {
-              [language]: {
-                [setName]: {
-                  correctQuestions: user[language][setName]["correctQuestions"],
-                },
-              },
-            },
-            { merge: true }
-          );
-        }
+        userProgressData[language][setName].currentQuestion = 0;
       }
 
-      if (numOfCurrentQuestionFromDb == 0) {
-        // setDoc(
-        //   userDocRef,
-        //   {
-        //     [language]: {
-        //       [setName]: {
-        //         bestScore: user[language][setName]["correctQuestions"],
-        //       },
-        //     },
-        //   },
-        //   { merge: true }
-        // );
-        user[language][setName]["correctQuestions"] = 0;
-        localStorage.setItem("user", JSON.stringify(user));
+      //DISPLAYING THE CURRENT QUESTION NUMBER
+
+      setNumberOfCurrentQuestion(
+        (curr) => languageProgressDataLocal.currentQuestion
+      );
+
+      // CHECKING THE CORRECT QUESTIONS TRACKING
+
+      if (
+        languageProgressDataLocal.correctQuestions >
+          languageProgressDataFromDb.correctQuestions &&
+        !languageProgressDataLocal.completed
+      ) {
+        userProgressData[language][setName].correctQuestions =
+          languageProgressDataLocal.correctQuestions;
       }
+
+      // DISPLAYING THE CORRECT QUESTIONS NUMBER
+
+      setNumberOfCorrectQuestions(
+        (curr) => languageProgressDataLocal.correctQuestions
+      );
+
+      // CHECKING BEST SCORE AND RESETING VALUES
+      if (languageProgressDataLocal.completed) {
+        if (
+          languageProgressDataLocal.correctQuestions >
+          languageProgressDataLocal.bestScore
+        ) {
+          languageProgressDataLocal.bestScore =
+            languageProgressDataLocal.correctQuestions;
+        }
+
+        userProgressData[language][setName].bestScore =
+          languageProgressDataLocal.bestScore;
+
+        languageProgressDataLocal.currentQuestion = 0;
+        languageProgressDataLocal.correctQuestions = 0;
+        userProgressData[language][setName].currentQuestion = 0;
+        userProgressData[language][setName].correctQuestions = 0;
+
+        user[language][setName].completed = false;
+
+        // console.log(languageProgressDataLocal);
+      }
+
+      // SETTING BEST SCORE
+      console.log(user[language], setName);
+      setBestScore((curr) => languageProgressDataLocal.bestScore);
+
+      localStorage.setItem("user", JSON.stringify(user));
+      // console.log(userProgressData, user);
+      setDoc(userDocRef, userProgressData, { merge: true });
     });
   }, []);
 
@@ -190,6 +179,8 @@ function FlashCardSetListItem({ setName }) {
           direction={"row"}
           justifyContent={"space-between"}
           alignItems={"center"}
+          flexWrap={"wrap"}
+          gap={1}
         >
           <Typography
             variant="h3"
@@ -200,16 +191,23 @@ function FlashCardSetListItem({ setName }) {
           >
             {setName}
           </Typography>
-          <ProgressWithLabel
-            progressValue={numberOfCorrectQuestions}
-            label={"correct"}
-            color={"success"}
-          />
-          <ProgressWithLabel
-            progressValue={numberOfCurrentQuestion}
-            label={"current"}
-            color={"info"}
-          />
+          <Stack direction={"row"}>
+            <ProgressWithLabel
+              progressValue={numberOfCorrectQuestions}
+              label={"correct"}
+              color={"success"}
+            />
+            <ProgressWithLabel
+              progressValue={numberOfCurrentQuestion}
+              label={"current"}
+              color={"info"}
+            />
+            <ProgressWithLabel
+              progressValue={bestScore}
+              label={"best"}
+              color={"warning"}
+            />
+          </Stack>
         </Stack>
 
         <Typography

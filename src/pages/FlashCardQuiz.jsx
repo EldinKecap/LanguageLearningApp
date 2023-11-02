@@ -46,7 +46,8 @@ export default function FlashCardQuiz() {
         flashCardSet = flashCardSet.set;
         //populating the array of flashcards
         const startingSetLenght = flashCardSet.length;
-        for (let i = 0; i < 100 - startingSetLenght; i++) {
+        ///////////////////!!!Change the 25 to 100!!!!!!!!!!!!!////////////
+        for (let i = 0; i < 25 - startingSetLenght; i++) {
           flashCardSet.push(flashCardSet[i]);
         }
 
@@ -77,6 +78,7 @@ export default function FlashCardQuiz() {
       }
     });
   }, []);
+  
 
   useEffect(() => {
     if (currentQuestion != 0) {
@@ -84,6 +86,7 @@ export default function FlashCardQuiz() {
         (curr) => ((currentQuestion + 1) / currentFlashCardSet.length) * 100
       );
     }
+    
   }, [currentQuestion]);
 
   return currentFlashCardSet.length > 0 ? (
@@ -99,8 +102,9 @@ export default function FlashCardQuiz() {
         console.log(currentQuestion, "currQuestion");
 
         user[language][flashCardSetName].currentQuestion = currentQuestion + 2;
-        if (user[language][flashCardSetName].currentQuestion >= 100) {
+        if (user[language][flashCardSetName].currentQuestion >= currentFlashCardSet.length) {
           user[language][flashCardSetName].currentQuestion = 0;
+          user[language][flashCardSetName].completed = true;
         }
 
         console.log(user);
