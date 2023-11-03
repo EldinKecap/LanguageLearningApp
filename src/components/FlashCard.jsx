@@ -8,8 +8,9 @@ import {
 } from "@mui/material";
 import React, { useRef, useState } from "react";
 import Logo from "./Logo";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import WrongAnswerHighlighted from "./WrongAnswerHighlighted";
+import FlashCardCompletedScreen from "./FlashCardCompletedScreen";
 
 export default function FlashCard({
   flashCardQuestion,
@@ -23,9 +24,9 @@ export default function FlashCard({
   const [showAnswer, setShowAnswer] = useState(false);
   const [keyPressed, setKeyPressed] = useState(true);
   const answerRef = useRef();
-  const navigator = useNavigate();
   const { language, flashCardSetName } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
+
   if (!user[language][flashCardSetName].correctQuestions) {
     user[language][flashCardSetName].correctQuestions = 0;
     localStorage.setItem("user", JSON.stringify(user));
@@ -34,7 +35,7 @@ export default function FlashCard({
   function onShowAnswerClickedHandler() {
     setShowAnswer((curr) => !curr);
   }
-  // console.log(numberOfQuestions, currentQuestionNumber);
+
   return (
     <Stack height="100vh">
       <Stack
@@ -161,40 +162,11 @@ export default function FlashCard({
           </Stack>
         </Stack>
       ) : (
-        <Stack m={"auto"} maxWidth={350} alignItems="center" gap={2}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontFamily: "Staatliches",
-              color: "text.primary",
-              textAlign: "center",
-            }}
-          >
-            You have completed this set
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{
-              fontFamily: "Staatliches",
-              color: "text.primary",
-              textAlign: "center",
-            }}
-          >
-            {user[language][flashCardSetName].correctQuestions +
-              "/" +
-              numberOfQuestions}
-          </Typography>
-          <Button
-            variant="contained"
-            className="gradientButton buttonHover"
-            sx={{ fontFamily: "Staatliches" }}
-            onClick={() => {
-              navigator(-1);
-            }}
-          >
-            Choose a next set
-          </Button>
-        </Stack>
+        <FlashCardCompletedScreen
+          language={language}
+          setName={flashCardSetName}
+          numberOfQuestions={numberOfQuestions}
+        />
       )}
     </Stack>
   );

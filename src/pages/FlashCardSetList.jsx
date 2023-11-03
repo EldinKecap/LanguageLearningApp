@@ -47,7 +47,6 @@ function FlashCardSetListItem({ setName }) {
     getDoc(userDocRef).then((docSnap) => {
       const user = JSON.parse(localStorage.getItem("user"));
       const userProgressData = docSnap.data();
-      // console.log(userProgressData);
 
       // CHECKING TO SEE IF PROGRESS DATA IS SAVED IN FB
       // BY SEEING IF THE LANGUAGE HAS THAT PROPERTY
@@ -129,15 +128,12 @@ function FlashCardSetListItem({ setName }) {
 
         user[language][setName].completed = false;
 
-        // console.log(languageProgressDataLocal);
       }
 
       // SETTING BEST SCORE
-      console.log(user[language], setName);
       setBestScore((curr) => languageProgressDataLocal.bestScore);
 
       localStorage.setItem("user", JSON.stringify(user));
-      // console.log(userProgressData, user);
       setDoc(userDocRef, userProgressData, { merge: true });
     });
   }, []);
@@ -176,7 +172,6 @@ function FlashCardSetListItem({ setName }) {
     >
       <CardContent>
         <Stack
-          direction={"row"}
           justifyContent={"space-between"}
           alignItems={"center"}
           flexWrap={"wrap"}

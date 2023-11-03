@@ -35,7 +35,7 @@ export default function ProgressWithLabel({ progressValue, label, color }) {
       </Box>
       <Typography
         variant="caption"
-        color="text.secondary"
+        color={color + ".main"}
         fontFamily={"Staatliches"}
         align="center"
       >

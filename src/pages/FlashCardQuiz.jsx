@@ -3,11 +3,8 @@ import { useParams } from "react-router-dom";
 import FlashCard from "../components/FlashCard";
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   query,
-  setDoc,
   where,
 } from "firebase/firestore";
 import db from "../firebase/firebase";
@@ -47,7 +44,7 @@ export default function FlashCardQuiz() {
         //populating the array of flashcards
         const startingSetLenght = flashCardSet.length;
         ///////////////////!!!Change the 25 to 100!!!!!!!!!!!!!////////////
-        for (let i = 0; i < 25 - startingSetLenght; i++) {
+        for (let i = 0; i < 100 - startingSetLenght; i++) {
           flashCardSet.push(flashCardSet[i]);
         }
 
@@ -59,11 +56,14 @@ export default function FlashCardQuiz() {
           .map(({ value }) => value);
 
         setCurrentFlashCardSet((curr) => randomizedFlashCardSet);
+
         const user = JSON.parse(localStorage.getItem("user"));
+
         if (user[language][flashCardSetName].currentQuestion > 100) {
           user[language][flashCardSetName].currentQuestion = 0;
           localStorage.setItem("user", JSON.stringify(user));
         }
+
         if (
           user[language][flashCardSetName].currentQuestion &&
           user[language][flashCardSetName].currentQuestion > currentQuestion
@@ -72,6 +72,7 @@ export default function FlashCardQuiz() {
             (curr) => user[language][flashCardSetName].currentQuestion - 1
           );
         }
+
       } else {
         setNoQuestionsError(true);
         return;
@@ -95,9 +96,11 @@ export default function FlashCardQuiz() {
       flashCardQuestion={currentFlashCardSet[currentQuestion].flashCardQuestion}
       completion={completion}
       nextQuestion={() => {
+
         setCurrentQuestion((curr) =>
           curr != currentFlashCardSet.length - 1 ? curr + 1 : curr
         );
+        
         const user = JSON.parse(localStorage.getItem("user"));
         console.log(currentQuestion, "currQuestion");
 
@@ -107,20 +110,7 @@ export default function FlashCardQuiz() {
           user[language][flashCardSetName].completed = true;
         }
 
-        console.log(user);
         localStorage.setItem("user", JSON.stringify(user));
-        // const userDocRef = doc(db, "users", user.uid);
-
-        // setDoc(
-        //   userDocRef,
-        //   {
-        //     [language]: {
-        //       //I have to increase currentQuestion here because i used it as an index for the set array
-        //       [flashCardSetName]: { currentQuestion: currentQuestion + 2 },
-        //     },
-        //   },
-        //   { merge: false }
-        // );
 
         setCompletion(
           (curr) => ((currentQuestion + 1) / currentFlashCardSet.length) * 100

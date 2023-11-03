@@ -28,7 +28,6 @@ function LanguageListItem({ title, path }) {
 
     getDoc(userDocRef).then((docSnap) => {
       const userProgressData = docSnap.data();
-      console.log(userProgressData);
       if (Object.keys(userProgressData).includes(title)) {
         navigator(path);
       } else {
@@ -90,7 +89,7 @@ export default function LanguageList() {
       setShowLoading(false);
     });
   }, []);
-  
+
   return (
     <>
       <Title title="Language List" />
