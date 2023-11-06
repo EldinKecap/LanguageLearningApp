@@ -45,9 +45,10 @@ export default function Login() {
         // IdP data available using getAdditionalUserInfo(result)
         // console.log(user);
 
-        const docRef = doc(db, "users", user.uid);
+        const userDocRef = doc(db, "users", user.uid);
+        const adminDocRef = doc(db, "administrators", user.uid);
 
-        getDoc(docRef)
+        getDoc(userDocRef)
           .then((docSnap) => {
             let userProgressData = docSnap.data();
             if (!docSnap.exists()) {
@@ -56,23 +57,44 @@ export default function Login() {
             } else {
               userProgressData = docSnap.data();
             }
-            localStorage.setItem(
-              "user",
-              JSON.stringify({
-                accessToken: user.accessToken,
-                email: user.email,
-                name: user.displayName,
-                photoURL: user.photoURL,
-                uid: user.uid,
-                ...userProgressData,
-              })
-            );
+            getDoc(adminDocRef).then((docSnap) => {
+              console.log(docSnap.data());
+              if (docSnap.exists()) {
+                localStorage.setItem(
+                  "user",
+                  JSON.stringify({
+                    accessToken: user.accessToken,
+                    email: user.email,
+                    name: user.displayName,
+                    photoURL: user.photoURL,
+                    uid: user.uid,
+                    isAdmin: true,
+                    ...userProgressData,
+                  })
+                );
+              } else {
+                localStorage.setItem(
+                  "user",
+                  JSON.stringify({
+                    accessToken: user.accessToken,
+                    email: user.email,
+                    name: user.displayName,
+                    photoURL: user.photoURL,
+                    uid: user.uid,
+                    isAdmin: false,
+                    ...userProgressData,
+                  })
+                );
+              }
+              navigator("/");
+            });
+
+            
           })
           .catch((err) => {
             console.log(err);
+            navigator("/error");
           });
-
-        navigator("/");
       })
       .catch((error) => {
         // Handle Errors here.

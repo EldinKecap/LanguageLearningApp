@@ -20,16 +20,25 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function NavBar() {
   const mobile = useMediaQuery("(max-width:800px)");
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigator = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showLoginButton, setShowLoginButton] = useState(true);
+
   const auth = getAuth();
   // auth.onAuthStateChanged((user) => {
   //   console.log(auth.currentUser);
   // });
+
   if (user && showLoginButton) {
     setShowLoginButton(false);
+  }
+  console.log(user);
+  if (user && user.isAdmin) {
+    if (!isAdmin) {
+      setIsAdmin(true);
+    }
   }
 
   function onSignOutClicked() {
@@ -37,6 +46,7 @@ export default function NavBar() {
       console.log(data);
       setShowLoginButton(true);
       localStorage.clear();
+      setIsAdmin(false);
       navigator("/");
     });
   }
@@ -155,9 +165,21 @@ export default function NavBar() {
             About
           </ListItemButton>
           <Divider />
-          <ListItemButton key={"contact"} sx={listDrawerItemButton}>
-            Contact
-          </ListItemButton>
+          {isAdmin ? (
+            <ListItemButton
+              key={"contact"}
+              sx={listDrawerItemButton}
+              onClick={() => {
+                navigator("/admin");
+              }}
+            >
+              Admin Panel
+            </ListItemButton>
+          ) : (
+            <ListItemButton key={"contact"} sx={listDrawerItemButton}>
+              Contact
+            </ListItemButton>
+          )}
           <Divider />
         </List>
       </Drawer>
@@ -205,11 +227,25 @@ export default function NavBar() {
                   About
                 </ButtonBase>
               </ListItem>
-              <ListItem sx={listItem}>
-                <ButtonBase className="buttonHover" sx={listItemButton}>
-                  Contact
-                </ButtonBase>
-              </ListItem>
+              {isAdmin ? (
+                <ListItem sx={listItem}>
+                  <ButtonBase
+                    className="buttonHover"
+                    sx={listItemButton}
+                    onClick={() => {
+                      navigator("/admin");
+                    }}
+                  >
+                    Admin Panel
+                  </ButtonBase>
+                </ListItem>
+              ) : (
+                <ListItem sx={listItem}>
+                  <ButtonBase className="buttonHover" sx={listItemButton}>
+                    Contact
+                  </ButtonBase>
+                </ListItem>
+              )}
             </Stack>
           </List>
           {showLoginButton ? (
