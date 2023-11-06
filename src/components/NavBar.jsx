@@ -135,9 +135,21 @@ export default function NavBar() {
             Close
           </ListItemButton>
           <Divider />
-          <ListItemButton key={"whyJoin"} sx={listDrawerItemButton}>
-            Why Join
-          </ListItemButton>
+          {showLoginButton ? (
+            <ListItemButton key={"whyJoin"} sx={listDrawerItemButton}>
+              Why Join
+            </ListItemButton>
+          ) : (
+            <ListItemButton
+              key={"courses"}
+              sx={listDrawerItemButton}
+              onClick={() => {
+                navigator("/languagelist");
+              }}
+            >
+              Courses
+            </ListItemButton>
+          )}
           <Divider />
           <ListItemButton key={"about"} sx={listDrawerItemButton}>
             About
@@ -172,9 +184,21 @@ export default function NavBar() {
               }}
             >
               <ListItem sx={listItem}>
-                <ButtonBase className="buttonHover" sx={listItemButton}>
-                  Why join
-                </ButtonBase>
+                {showLoginButton ? (
+                  <ButtonBase className="buttonHover" sx={listItemButton}>
+                    Why join
+                  </ButtonBase>
+                ) : (
+                  <ButtonBase
+                    className="buttonHover"
+                    sx={listItemButton}
+                    onClick={() => {
+                      navigator("/languagelist");
+                    }}
+                  >
+                    Courses
+                  </ButtonBase>
+                )}
               </ListItem>
               <ListItem sx={listItem}>
                 <ButtonBase className="buttonHover" sx={listItemButton}>
