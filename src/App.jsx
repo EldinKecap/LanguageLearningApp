@@ -27,6 +27,7 @@ function App() {
   const user = JSON.parse(localStorage.getItem("user"));
   
   // console.log(user);
+  /////////////////implement context for is admin
   if (isAdmin == false && user) {
     setIsAdmin(true);
   }

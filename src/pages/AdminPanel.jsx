@@ -110,7 +110,7 @@ function LanguageListItem({ language }) {
       <ListItem key={language}>
         <ListItemText
           disableTypography
-          sx={{ color: "text.primary", fontSize: "2rem" }}
+          sx={{ color: "text.primary", fontSize: "2rem", minWidth:"fit-content"}}
         >
           {showEditTextField ? (
             <Stack direction="row" alignItems="center">
@@ -146,35 +146,37 @@ function LanguageListItem({ language }) {
             language
           )}
         </ListItemText>
-        <IconButtonWithLabel
-          label="Special chars"
-          icon={<AddBox />}
-          onClickHandler={onSpecialCharsClicked}
-        />
-        <IconButtonWithLabel
-          label="Add a set"
-          icon={<Add />}
-          onClickHandler={onAddSetClickHandler}
-        />
-        <IconButtonWithLabel
-          label="Edit"
-          icon={<Edit />}
-          onClickHandler={onEditIconClicked}
-        />
-        <IconButtonWithLabel
-          label="Delete"
-          icon={<Delete />}
-          onClickHandler={onDeleteLanguageIconClicked}
-        />
-        <DeleteDialog
-          open={open}
-          contentText={
-            "If you click on agree you will permanently delete this language and all of it's flash card sets"
-          }
-          handleClose={handleClose}
-          title={`Do you want to delete ${language}?`}
-          deleteFunction={deleteFunction}
-        />
+        <Stack direction={"row"} flexWrap={"wrap"} justifyContent={"center"}>
+          <IconButtonWithLabel
+            label="Special chars"
+            icon={<AddBox />}
+            onClickHandler={onSpecialCharsClicked}
+          />
+          <IconButtonWithLabel
+            label="Add a set"
+            icon={<Add />}
+            onClickHandler={onAddSetClickHandler}
+          />
+          <IconButtonWithLabel
+            label="Edit"
+            icon={<Edit />}
+            onClickHandler={onEditIconClicked}
+          />
+          <IconButtonWithLabel
+            label="Delete"
+            icon={<Delete />}
+            onClickHandler={onDeleteLanguageIconClicked}
+          />
+          <DeleteDialog
+            open={open}
+            contentText={
+              "If you click on agree you will permanently delete this language and all of it's flash card sets"
+            }
+            handleClose={handleClose}
+            title={`Do you want to delete ${language}?`}
+            deleteFunction={deleteFunction}
+          />
+        </Stack>
       </ListItem>
       <Divider />
     </>
