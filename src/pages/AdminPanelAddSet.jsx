@@ -168,12 +168,16 @@ function SetListItem({ setNameProp, sets }) {
           ) : (
             <ListItemText
               disableTypography
-              sx={{ color: "text.primary", fontSize: "2rem" }}
+              sx={{
+                color: "text.primary",
+                fontSize: "2rem",
+                minWidth: "fit-content",
+              }}
             >
               {setNameProp}
             </ListItemText>
           )}
-          <Stack direction={"row"}>
+          <Stack direction={"row"} justifyContent={"center"} flexWrap={"wrap"}>
             <IconButtonWithLabel
               label="Add Question"
               icon={<Add />}
@@ -224,7 +228,7 @@ export default function AdminPanelAddSet() {
         (val) => val.name == language
       );
       if (languageWithSets[0].flashCardSets) {
-        languageWithSets[0].flashCardSets.reverse()
+        languageWithSets[0].flashCardSets.reverse();
         setSets((curr) => languageWithSets[0].flashCardSets);
       }
       // setShowLoading(false);
