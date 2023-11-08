@@ -177,7 +177,7 @@ function SetListItem({ setNameProp, sets }) {
               {setNameProp}
             </ListItemText>
           )}
-          <Stack direction={"row"} justifyContent={"center"} flexWrap={"wrap"}>
+          <Stack direction={"row"} justifyContent={"center"} flexWrap={"wrap"} width={"50%"}>
             <IconButtonWithLabel
               label="Add Question"
               icon={<Add />}

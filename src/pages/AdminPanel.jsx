@@ -146,7 +146,7 @@ function LanguageListItem({ language }) {
             language
           )}
         </ListItemText>
-        <Stack direction={"row"} flexWrap={"wrap"} justifyContent={"center"}>
+        <Stack direction={"row"} flexWrap={"wrap"} justifyContent={"center"} width={"50%"}>
           <IconButtonWithLabel
             label="Special chars"
             icon={<AddBox />}

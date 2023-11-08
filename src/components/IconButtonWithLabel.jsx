@@ -2,7 +2,7 @@ import { IconButton, Stack, Typography } from '@mui/material'
 import React from 'react'
 
 export default function IconButtonWithLabel({ label, onClickHandler, icon , sx = {} }) {
-    return (<Stack mx={2} alignItems="center" gap={0.5} sx={sx}>
+    return (<Stack mx={2} alignItems="center" gap={0.5} sx={sx} flexBasis={0}>
         <IconButton sx={{width:"fit-content"}}
             onClick={onClickHandler}
         >
