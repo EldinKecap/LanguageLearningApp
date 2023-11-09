@@ -124,13 +124,11 @@ export default function NavBar() {
       <Drawer
         open={drawerOpen}
         anchor="right"
-        onOpen={() => {
-          setDrawerOpen(true);
-        }}
         onClose={() => {
           setDrawerOpen(false);
         }}
       >
+        {console.log(drawerOpen)}
         <List disablePadding>
           <ListItemButton
             key={"hamburgerMenu"}
@@ -154,6 +152,7 @@ export default function NavBar() {
               key={"courses"}
               sx={listDrawerItemButton}
               onClick={() => {
+                setDrawerOpen(false);
                 navigator("/languagelist");
               }}
             >
@@ -161,7 +160,13 @@ export default function NavBar() {
             </ListItemButton>
           )}
           <Divider />
-          <ListItemButton key={"about"} sx={listDrawerItemButton}>
+          <ListItemButton
+            key={"about"}
+            sx={listDrawerItemButton}
+            onClick={() => {
+              setDrawerOpen(false);
+            }}
+          >
             About
           </ListItemButton>
           <Divider />
@@ -170,13 +175,20 @@ export default function NavBar() {
               key={"contact"}
               sx={listDrawerItemButton}
               onClick={() => {
+                setDrawerOpen(false);
                 navigator("/admin");
               }}
             >
               Admin Panel
             </ListItemButton>
           ) : (
-            <ListItemButton key={"contact"} sx={listDrawerItemButton}>
+            <ListItemButton
+              key={"contact"}
+              sx={listDrawerItemButton}
+              onClick={() => {
+                setDrawerOpen(false);
+              }}
+            >
               Contact
             </ListItemButton>
           )}
