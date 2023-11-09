@@ -26,7 +26,7 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   
-  // console.log(user);
+  console.log(user);
   /////////////////implement context for is admin
   if (isAdmin == false && user) {
     setIsAdmin(true);
@@ -37,7 +37,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login setIsAdmin={setIsAdmin}/>} />
             <Route path="/languagelist" element={<LanguageList />} />
             <Route
               path="/languagelist/:language"

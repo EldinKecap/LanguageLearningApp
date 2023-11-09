@@ -21,7 +21,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import db from "../firebase/firebase";
 
-export default function Login() {
+export default function Login({ setIsAdmin }) {
   const navigator = useNavigate();
 
   function onGoogleSignInClicked() {
@@ -86,10 +86,9 @@ export default function Login() {
                   })
                 );
               }
+              setIsAdmin(true);
               navigator("/");
             });
-
-            
           })
           .catch((err) => {
             console.log(err);

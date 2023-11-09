@@ -34,7 +34,7 @@ export default function NavBar() {
   if (user && showLoginButton) {
     setShowLoginButton(false);
   }
-  console.log(user);
+
   if (user && user.isAdmin) {
     if (!isAdmin) {
       setIsAdmin(true);
