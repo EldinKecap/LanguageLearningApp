@@ -1,6 +1,11 @@
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
+  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -13,6 +18,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
 import {
   Add,
+  AddBox,
+  Close,
   Delete,
   Edit,
   QuestionAnswer,
@@ -36,6 +43,7 @@ function SetListItem({ setNameProp, sets }) {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [showEditTextField, setShowEditTextField] = useState(false);
   const [showEditError, setShowEditError] = useState(false);
+  const [showAddDescription, setShowAddDescription] = useState(false);
   const editTextFieldRef = useRef();
 
   function onAddQuestionHandler() {
@@ -177,7 +185,19 @@ function SetListItem({ setNameProp, sets }) {
               {setNameProp}
             </ListItemText>
           )}
-          <Stack direction={"row"} justifyContent={"center"} flexWrap={"wrap"} width={"50%"}>
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            flexWrap={"wrap"}
+            width={"50%"}
+          >
+            <IconButtonWithLabel
+              label="Add Description"
+              icon={<AddBox />}
+              onClickHandler={() => {
+                setShowAddDescription((curr) => !curr);
+              }}
+            />
             <IconButtonWithLabel
               label="Add Question"
               icon={<Add />}
@@ -204,6 +224,60 @@ function SetListItem({ setNameProp, sets }) {
               title={`Do you want to delete "${setNameProp}" set?`}
               deleteFunction={deleteFunction}
             />
+            <Dialog
+              open={showAddDescription}
+              onClose={() => {
+                setShowAddDescription((curr) => !curr);
+              }}
+            >
+              <DialogTitle>
+                <Stack
+                  direction={"row"}
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                >
+                  <Typography
+                    sx={{ fontFamily: "Staatliches", fontSize: "22px" }}
+                  >
+                    Enter description
+                  </Typography>
+                </Stack>
+              </DialogTitle>
+              <DialogContent>
+                <TextField
+                  label="Description"
+                  multiline
+                  rows={4}
+                  sx={{ mt: 1 }}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Stack
+                  width={"100%"}
+                  direction={"row"}
+                  px={2}
+                  pb={1}
+                  justifyContent={"space-between"}
+                >
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={() => {
+                      setShowAddDescription((curr) => !curr);
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    variant="contained"
+                    className="gradientButton"
+                    color="success"
+                  >
+                    Submit
+                  </Button>
+                </Stack>
+              </DialogActions>
+            </Dialog>
           </Stack>
         </Stack>
       </ListItem>
