@@ -45,6 +45,7 @@ function SetListItem({ setNameProp, sets }) {
   const [showEditError, setShowEditError] = useState(false);
   const [showAddDescription, setShowAddDescription] = useState(false);
   const editTextFieldRef = useRef();
+  const addDescriptionRef = useRef();
 
   function onAddQuestionHandler() {
     navigator(setNameProp);
@@ -108,6 +109,10 @@ function SetListItem({ setNameProp, sets }) {
         }
       });
     }
+  }
+  function onAddDescriptionHandler() {
+    console.log(addDescriptionRef.current.value);
+    let description = addDescriptionRef.current.value;
   }
 
   function onDeleteHandler() {
@@ -249,6 +254,7 @@ function SetListItem({ setNameProp, sets }) {
                   multiline
                   rows={4}
                   sx={{ mt: 1 }}
+                  inputRef={addDescriptionRef}
                 />
               </DialogContent>
               <DialogActions>
@@ -272,6 +278,9 @@ function SetListItem({ setNameProp, sets }) {
                     variant="contained"
                     className="gradientButton"
                     color="success"
+                    onClick={() => {
+                      onAddDescriptionHandler()
+                    }}
                   >
                     Submit
                   </Button>
