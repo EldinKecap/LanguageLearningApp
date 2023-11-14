@@ -44,6 +44,7 @@ function SetListItem({ setNameProp, sets }) {
   const [showEditTextField, setShowEditTextField] = useState(false);
   const [showEditError, setShowEditError] = useState(false);
   const [showAddDescription, setShowAddDescription] = useState(false);
+  const [addDescriptionError, setAddDescriptionError] = useState(false)
   const editTextFieldRef = useRef();
   const addDescriptionRef = useRef();
 
@@ -110,9 +111,44 @@ function SetListItem({ setNameProp, sets }) {
       });
     }
   }
-  function onAddDescriptionHandler() {
+
+  function onAddDescriptionHandler(event) {
     console.log(addDescriptionRef.current.value);
     let description = addDescriptionRef.current.value;
+    if (event.key == "Enter" || event.type == "click") {
+      const q = query(
+        collection(db, "languages"),
+        where("name", "==", language)
+      );
+      getDocs(q).then((querySnap) => {
+        if (querySnap.size == 1) {
+          let languageID = "";
+          let languageSets = {};
+
+          querySnap.forEach((doc) => {
+            languageID = doc.id;
+            languageSets = doc.data().flashCardSets;
+          });
+          languageSets.forEach((setInLanguageSets) => {
+            if (setInLanguageSets.name == setNameProp) {
+              console.log(setInLanguageSets);
+              setInLanguageSets['description'] = description
+            }
+          });
+          const languageDocRef = doc(db, "languages", languageID);
+          console.log(languageSets);
+          setDoc(
+            languageDocRef,
+            {
+              flashCardSets: languageSets,
+            },
+            { merge: true }
+          ).then(() => {
+            navigator(0);
+          });
+        }
+      });
+    }
   }
 
   function onDeleteHandler() {
@@ -278,9 +314,7 @@ function SetListItem({ setNameProp, sets }) {
                     variant="contained"
                     className="gradientButton"
                     color="success"
-                    onClick={() => {
-                      onAddDescriptionHandler()
-                    }}
+                    onClick={onAddDescriptionHandler}
                   >
                     Submit
                   </Button>
