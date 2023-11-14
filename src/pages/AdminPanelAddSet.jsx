@@ -37,7 +37,7 @@ import {
 import db from "../firebase/firebase";
 import DeleteDialog from "../components/DeleteDialog";
 
-function SetListItem({ setNameProp, sets }) {
+function SetListItem({ setNameProp, sets, description = "" }) {
   const { language } = useParams();
   const navigator = useNavigate();
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
@@ -284,6 +284,7 @@ function SetListItem({ setNameProp, sets }) {
               </DialogTitle>
               <DialogContent>
                 <TextField
+                  defaultValue={description}
                   label="Description"
                   multiline
                   rows={4}
@@ -480,7 +481,7 @@ export default function AdminPanelAddSet() {
         {sets.length > 0 ? (
           sets.map((set) => {
             return (
-              <SetListItem key={set.name} setNameProp={set.name} sets={sets} />
+              <SetListItem key={set.name} setNameProp={set.name} sets={sets} description={set.description} />
             );
           })
         ) : (
