@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import ProgressWithLabel from "../components/ProgressWithLabel";
 
-function FlashCardSetListItem({ setName }) {
+function FlashCardSetListItem({ setName, description = "" }) {
   const navigator = useNavigate();
   const { language } = useParams();
   const [numberOfCurrentQuestion, setNumberOfCurrentQuestion] = useState(0);
@@ -76,7 +76,7 @@ function FlashCardSetListItem({ setName }) {
 
       if (
         languageProgressDataLocal.currentQuestion >
-          languageProgressDataFromDb.currentQuestion &&
+        languageProgressDataFromDb.currentQuestion &&
         !languageProgressDataLocal.completed
       ) {
         userProgressData[language][setName].currentQuestion =
@@ -95,7 +95,7 @@ function FlashCardSetListItem({ setName }) {
 
       if (
         languageProgressDataLocal.correctQuestions >
-          languageProgressDataFromDb.correctQuestions &&
+        languageProgressDataFromDb.correctQuestions &&
         !languageProgressDataLocal.completed
       ) {
         userProgressData[language][setName].correctQuestions =
@@ -209,7 +209,7 @@ function FlashCardSetListItem({ setName }) {
           variant="body2"
           sx={{ fontFamily: "Staatliches", color: "text.secondary", mt: 3 }}
         >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sunt, quam!
+          {description}
         </Typography>
         <CardActions sx={{ justifyContent: "end", mt: "auto" }}>
           <Button
@@ -228,7 +228,7 @@ function FlashCardSetListItem({ setName }) {
 
 export default function FlashCardSetList() {
   const { language } = useParams();
-  const [flashCardSetNames, setFlashCardSetNames] = useState([]);
+  const [flashCardSets, setFlashCardSets] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
@@ -242,10 +242,7 @@ export default function FlashCardSetList() {
         (doc) => doc.data().flashCardSets
       )[0];
       if (flashCardSets) {
-        const flashCardSetNamesArray = flashCardSets.map(
-          (flashCardSet) => flashCardSet.name
-        );
-        setFlashCardSetNames(flashCardSetNamesArray);
+        setFlashCardSets(flashCardSets);
       }
 
       setShowLoading(false);
@@ -271,9 +268,11 @@ export default function FlashCardSetList() {
       >
         {showLoading ? (
           <CircularProgress color="success" disableShrink />
-        ) : flashCardSetNames.length > 0 ? (
-          flashCardSetNames.map((setName) => {
-            return <FlashCardSetListItem key={setName} setName={setName} />;
+        ) : flashCardSets.length > 0 ? (
+          flashCardSets.map((set) => {
+            const setName = set.name;
+            const description = set.description;
+            return <FlashCardSetListItem key={setName} setName={setName} description={description} />;
           })
         ) : (
           <Typography

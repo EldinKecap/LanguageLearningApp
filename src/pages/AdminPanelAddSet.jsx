@@ -44,7 +44,6 @@ function SetListItem({ setNameProp, sets }) {
   const [showEditTextField, setShowEditTextField] = useState(false);
   const [showEditError, setShowEditError] = useState(false);
   const [showAddDescription, setShowAddDescription] = useState(false);
-  const [addDescriptionError, setAddDescriptionError] = useState(false)
   const editTextFieldRef = useRef();
   const addDescriptionRef = useRef();
 
@@ -132,11 +131,10 @@ function SetListItem({ setNameProp, sets }) {
           languageSets.forEach((setInLanguageSets) => {
             if (setInLanguageSets.name == setNameProp) {
               console.log(setInLanguageSets);
-              setInLanguageSets['description'] = description
+              setInLanguageSets['description'] = description;
             }
           });
           const languageDocRef = doc(db, "languages", languageID);
-          console.log(languageSets);
           setDoc(
             languageDocRef,
             {
