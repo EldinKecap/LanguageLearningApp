@@ -2,42 +2,66 @@ import React from "react";
 import NavBar from "../components/NavBar";
 import HeroSection from "../components/HeroSection";
 import InformationSection from "../components/InformationSection";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+  const navigator = useNavigate();
+  const mobile = useMediaQuery("(max-width:800px)");
   return (
     <>
       <HeroSection />
       <InformationSection />
-      <Stack direction={"row"} width={"80%"} justifyContent={"end"} alignItems={"center"} px={6}>
+      <Stack
+        direction={mobile ? "column-reverse" : "row"}
+        m={"auto"}
+        width={"80%"}
+        justifyContent={"space-around"}
+        alignItems={"center"}
+        gap={3}
+        px={6}
+        pb={2}
+        >
         <Box>
-          <Button variant="contained" size="large" className="gradientButton">
+          <Button variant="contained" size="large" className="gradientButton" sx={{
+            fontFamily: "Staatliches",
+            fontSize: "30px",
+            borderRadius: "50px",
+            borderColor: "transparent",
+            px: "35px",
+          }}
+            color="success"
+            onClick={() => {
+              navigator('/login')
+            }}
+          >
             Register
           </Button>
         </Box>
-        <Box >
+        <Box sx={{
+          minWidth: "200px",
+          width: "50%"
+        }}>
           <Typography
             variant="h1"
             sx={{
               fontFamily: "Staatliches",
-              minWidth: "200px",
               pt: 3,
-              textAlign: "right",
+              textAlign: mobile ? "center" : "right",
             }}
             color={"text.primary"}
           >
             Try for <br />
-            <strong className="gradientLetters">Free</strong>!
+            <strong className="movingGradientBackgroundLetters">Free</strong>!
           </Typography>
           <Typography
             variant="body1"
             sx={{
               fontFamily: "Staatliches",
-              minWidth: "200px",
-              float:"right"
+              float: "right",
+              textAlign:mobile ? "center" :"initial"
             }}
             color={"text.secondary"}
-            width={"50%"}
           >
             For all new participants we offer a free first set in any language
             of their choosing.

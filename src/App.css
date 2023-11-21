@@ -5,9 +5,11 @@
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
+  
 }
 
 .gradientButton {
+  filter: drop-shadow(0px 0px 2px #4ae07c);
   background: linear-gradient(160deg, #18c8d1, #03e04b), #03e04b;
   font-family: "Staatliches";
 }
@@ -20,6 +22,27 @@
 
 body {
   font-family: Staatliches;
+}
+
+.movingGradientBackgroundLetters {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.50));
+  animation: background-pan 5s ease-in-out infinite;
+  background: linear-gradient(to right, #18c8d1, #03e04b, #18c8d1);
+  background-size: 200vw;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+
+@keyframes background-pan {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
 }
 
 /* 
