@@ -4,6 +4,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  CircularProgress,
   Stack,
   TextField,
   Typography,
@@ -17,12 +18,13 @@ import {
   browserSessionPersistence,
 } from "firebase/auth";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import db from "../firebase/firebase";
 
 export default function Login({ setIsAdmin }) {
   const navigator = useNavigate();
+  const [loginLoading, setLoginLoading] = useState(false);
 
   function onGoogleSignInClicked() {
     const provider = new GoogleAuthProvider();
@@ -37,6 +39,7 @@ export default function Login({ setIsAdmin }) {
 
     signInWithPopup(auth, provider)
       .then((result) => {
+        setLoginLoading(true);
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
@@ -92,6 +95,7 @@ export default function Login({ setIsAdmin }) {
           })
           .catch((err) => {
             console.log(err);
+            setLoginLoading(false);
             navigator("/error");
           });
       })
@@ -131,8 +135,9 @@ export default function Login({ setIsAdmin }) {
               variant="contained"
               startIcon={<Google />}
               onClick={onGoogleSignInClicked}
+              disabled={loginLoading}
             >
-              Sign in
+              {loginLoading ? <CircularProgress /> : "Sign in"}
             </Button>
           </Stack>
         </CardActions>
