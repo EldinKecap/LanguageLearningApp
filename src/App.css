@@ -27,9 +27,9 @@ body {
 
 .movingGradientBackgroundLetters {
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
-  animation: background-pan 3s linear infinite;
-  background: linear-gradient(to right, #18c8d1, #03e04dbe, #00ff5575, #18c8d1);
-  background-size: 200vw;
+  animation: background-pan 3s ease-in-out infinite;
+  background: linear-gradient(to right, #18c8d1, #03e04dbe, #18c8d1);
+  background-size: 300vw;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
