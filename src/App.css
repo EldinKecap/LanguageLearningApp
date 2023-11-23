@@ -13,10 +13,12 @@
   font-family: "Staatliches";
 }
 
-.buttonHover:hover,
-.gradientButton:hover {
-  opacity: 0.5;
-  transition: all 0.25s;
+@media (hover: hover) {
+  .buttonHover:hover,
+  .gradientButton:hover {
+    opacity: 0.5;
+    transition: all 0.25s;
+  }
 }
 
 body {
