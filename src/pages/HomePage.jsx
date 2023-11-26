@@ -4,6 +4,7 @@ import HeroSection from "../components/HeroSection";
 import InformationSection from "../components/InformationSection";
 
 import TryForFreeSection from "../components/TryForFreeSection";
+import SpatialRepetitionSection from "../components/SpatialRepetitionSection";
 
 export default function HomePage() {
  
@@ -12,6 +13,7 @@ export default function HomePage() {
       <HeroSection />
       <InformationSection />
       <TryForFreeSection />
+      <SpatialRepetitionSection />
     </>
   );
 }
