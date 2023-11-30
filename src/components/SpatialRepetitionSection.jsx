@@ -3,7 +3,7 @@ import React from "react";
 
 export default function SpatialRepetitionSection() {
   return (
-    <Box sx={{ backgroundColor: "#212326" }}>
+    <Box sx={{ py:5}}>
       <Typography
         variant="h2"
         sx={{

@@ -12,8 +12,8 @@ export default function HomePage() {
     <>
       <HeroSection />
       <InformationSection />
-      <TryForFreeSection />
       <SpatialRepetitionSection />
+      <TryForFreeSection />
     </>
   );
 }
