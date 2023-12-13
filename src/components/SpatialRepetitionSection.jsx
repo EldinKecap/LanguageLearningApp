@@ -1,9 +1,10 @@
 import { Box, Typography } from "@mui/material";
+import SpatialRepetitionImages from "../assets/spatial-repetition.png";
 import React from "react";
 
 export default function SpatialRepetitionSection() {
   return (
-    <Box sx={{ py:5}}>
+    <Box sx={{ py: 5 }}>
       <Typography
         variant="h2"
         sx={{
@@ -14,6 +15,17 @@ export default function SpatialRepetitionSection() {
       >
         Spatial Repetition
       </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          mt: 5,
+          mb: 5,
+        }}
+      >
+        <img src={SpatialRepetitionImages} width={"60%"} />
+      </Box>
       <Typography
         variant="body1"
         sx={{
