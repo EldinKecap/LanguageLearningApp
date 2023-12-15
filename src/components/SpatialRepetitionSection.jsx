@@ -24,7 +24,7 @@ export default function SpatialRepetitionSection() {
           mb: 5,
         }}
       >
-        <img src={SpatialRepetitionImages} width={"60%"} />
+        <img src={SpatialRepetitionImages} width={"300px"} />
       </Box>
       <Typography
         variant="body1"
