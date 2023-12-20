@@ -5,6 +5,10 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   List,
   ListItem,
@@ -26,6 +30,7 @@ import {
 } from "firebase/firestore";
 import db from "../firebase/firebase";
 import DeleteDialog from "../components/DeleteDialog";
+import readXlsxFile from "read-excel-file";
 
 function addQuestionFormReducer(state, action) {
   // console.log(state, action);
@@ -316,6 +321,9 @@ export default function AdminPanelAddQuestion() {
   const { set, language } = useParams();
   // const [showAddQuestionForm, setShowAddQuestionForm] = useState(true);
   const [questions, setQuestions] = useState([]);
+  const [fileUploadState, setFileUploadState] = useState(false);
+  const [uploadDialogState, setUploadDialogState] = useState(false);
+  const [excelQuestionsToUpload, setExcelQuestionsToUpload] = useState([]);
 
   const addQuestionRef = useRef();
   const addAnswerRef = useRef();
@@ -486,8 +494,13 @@ export default function AdminPanelAddQuestion() {
             variant="contained"
             sx={{ fontFamily: "Staatliches" }}
             className="gradientButton"
+            disabled={fileUploadState}
           >
-            Upload excel file
+            {fileUploadState ? (
+              <CircularProgress size={25} sx={{ color: "black" }} />
+            ) : (
+              "Upload excel file"
+            )}
             <input
               ref={fileUploadInputRef}
               type="file"
@@ -501,11 +514,64 @@ export default function AdminPanelAddQuestion() {
                 whiteSpace: "nowrap",
               }}
               onChange={(e) => {
+                setFileUploadState(true);
                 console.log(e);
                 console.log(fileUploadInputRef.current.files);
+                readXlsxFile(fileUploadInputRef.current.files[0])
+                  .then((rows) => {
+                    setUploadDialogState(true);
+                    // `rows` is an array of rows
+                    // each row being an array of cells.
+                    setExcelQuestionsToUpload(rows);
+                    console.log(rows);
+                    setFileUploadState(false);
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
               }}
             />
           </Button>
+          <Dialog open={uploadDialogState}>
+            <DialogTitle>Questions to Upload</DialogTitle>
+            <DialogContent>
+              <List>
+                {excelQuestionsToUpload.map((question, index) => {
+                  return (
+                    <ListItem key={question}>
+                      {index + 1}.<br />
+                      Question: {question[0]} <br />
+                      Answer: {question[1]}
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={() => {
+                  fileUploadInputRef.current.value = null;
+
+                  setUploadDialogState(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  fileUploadInputRef.current.value = null;
+
+                  setUploadDialogState(false);
+                }}
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           {/* <Typography variant="body2"></Typography> */}
         </Stack>
         // ) : (
