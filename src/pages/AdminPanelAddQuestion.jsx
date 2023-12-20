@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import IconButtonWithLabel from "../components/IconButtonWithLabel";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete, Edit, Upload } from "@mui/icons-material";
 import {
   collection,
   doc,
@@ -319,6 +319,7 @@ export default function AdminPanelAddQuestion() {
 
   const addQuestionRef = useRef();
   const addAnswerRef = useRef();
+  const fileUploadInputRef = useRef();
 
   const [formErrorState, dispatch] = useReducer(addQuestionFormReducer, {
     questionError: false,
@@ -479,6 +480,33 @@ export default function AdminPanelAddQuestion() {
           >
             Submit
           </Button>
+          <Button
+            startIcon={<Upload />}
+            component="label"
+            variant="contained"
+            sx={{ fontFamily: "Staatliches" }}
+            className="gradientButton"
+          >
+            Upload excel file
+            <input
+              ref={fileUploadInputRef}
+              type="file"
+              style={{
+                clip: "rect(0 0 0 0)",
+                clipPath: "inset(50%)",
+                overflow: "hidden",
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                whiteSpace: "nowrap",
+              }}
+              onChange={(e) => {
+                console.log(e);
+                console.log(fileUploadInputRef.current.files);
+              }}
+            />
+          </Button>
+          {/* <Typography variant="body2"></Typography> */}
         </Stack>
         // ) : (
         //   <IconButtonWithLabel
