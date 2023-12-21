@@ -520,8 +520,6 @@ export default function AdminPanelAddQuestion() {
                 readXlsxFile(fileUploadInputRef.current.files[0])
                   .then((rows) => {
                     setUploadDialogState(true);
-                    // `rows` is an array of rows
-                    // each row being an array of cells.
                     setExcelQuestionsToUpload(rows);
                     console.log(rows);
                     setFileUploadState(false);
@@ -562,9 +560,58 @@ export default function AdminPanelAddQuestion() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  fileUploadInputRef.current.value = null;
+                  const fileUploadDataFormattedForFirebase =
+                    excelQuestionsToUpload.map((questionAndAnswer) => {
+                      return {
+                        flashCardQuestion: questionAndAnswer[0],
+                        flashCardAnswer: questionAndAnswer[1],
+                      };
+                    });
 
-                  setUploadDialogState(false);
+                  const q = query(
+                    collection(db, "languages"),
+                    where("name", "==", language)
+                  );
+                  getDocs(q).then((querySnap) => {
+                    if (querySnap.size == 1) {
+                      let languageID = "";
+                      let languageSets = {};
+                      querySnap.forEach((doc) => {
+                        // console.log(doc.id, doc.data());
+                        languageID = doc.id;
+                        languageSets = doc.data().flashCardSets;
+                      });
+                      languageSets.forEach((setInLanguageSets) => {
+                        console.log(setInLanguageSets.name, set);
+                        if (setInLanguageSets.name == set) {
+                          if (setInLanguageSets.set == undefined) {
+                            setInLanguageSets.set = [
+                              ...fileUploadDataFormattedForFirebase,
+                            ];
+                          } else {
+                            setInLanguageSets.set.push(
+                              ...fileUploadDataFormattedForFirebase
+                            );
+                          }
+                        }
+                      });
+                      console.log(languageSets);
+
+                      const languageDocRef = doc(db, "languages", languageID);
+                      console.log(languageSets);
+                      setDoc(
+                        languageDocRef,
+                        {
+                          flashCardSets: languageSets,
+                        },
+                        { merge: true }
+                      ).then(() => {
+                        setUploadDialogState(false);
+                        navigator(0);
+                      });
+                    }
+                  });
+                  fileUploadInputRef.current.value = null;
                 }}
               >
                 Confirm
@@ -572,7 +619,10 @@ export default function AdminPanelAddQuestion() {
             </DialogActions>
           </Dialog>
 
-          {/* <Typography variant="body2"></Typography> */}
+          <p style={{ color: "white", textAlign: "center" }}>
+            Note: Make sure column a has questions, column b has answers and
+            that questions have unique name
+          </p>
         </Stack>
         // ) : (
         //   <IconButtonWithLabel
