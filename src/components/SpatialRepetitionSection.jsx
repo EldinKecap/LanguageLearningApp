@@ -21,10 +21,10 @@ export default function SpatialRepetitionSection() {
           display: "flex",
           justifyContent: "center",
           mt: 5,
-          mb: 5,
+          // mb: 5,
         }}
       >
-        <img src={SpatialRepetitionImages} width={"300px"} />
+        {/* <img src={SpatialRepetitionImages} width={"300px"} /> */}
       </Box>
       <Typography
         variant="body1"
